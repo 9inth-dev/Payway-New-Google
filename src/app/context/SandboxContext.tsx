@@ -2,6 +2,7 @@ import React, { createContext, useContext, useState, useEffect, useCallback, use
 import { SandboxState, Transaction, ToastMessage, QrTestingState, RequirementStatus, EvidenceItem, ApiLog, ApiCategory } from '../types/sandbox';
 import { isReadyForProduction } from '../utils/readiness';
 import { SANDBOX_CREDENTIALS } from '../constants/sandboxCredentials';
+import { addCalendarMonths, createSandboxLifecycle, getSandboxCredentialStatus } from '../utils/sandboxLifecycle';
 
 const DEFAULT_TESTING_STATE: QrTestingState = {
   latestGenerateQrEndpoint: { status: 'not_detected' },
@@ -12,6 +13,7 @@ const DEFAULT_TESTING_STATE: QrTestingState = {
 };
 
 const DEFAULT_SANDBOX_STATE: SandboxState = {
+  ...createSandboxLifecycle(new Date('2026-08-17T09:00:00Z')),
   isLoggedIn: false,
   firstTimeUser: true,
   hasIntegration: false,
@@ -429,6 +431,10 @@ interface SandboxContextType {
   setDevSidebarOpen: (open: boolean | ((prev: boolean) => boolean)) => void;
   setSelectedActivityLogId: (id: string | null) => void;
   resetToDefaults: () => void;
+  requestSandboxExtension: () => void;
+  approveSandboxExtension: () => void;
+  getSandboxCredentialStatus: () => ReturnType<typeof getSandboxCredentialStatus>;
+  guardSandboxAccess: () => boolean;
 }
 
 
@@ -454,9 +460,13 @@ export const SandboxProvider: React.FC<{ children: React.ReactNode }> = ({ child
           delete parsed.publicKey;
           delete parsed.secretKey;
         }
+        const lifecycle = parsed.activatedAt && parsed.expiresAt
+          ? { activatedAt: parsed.activatedAt, expiresAt: parsed.expiresAt }
+          : createSandboxLifecycle(new Date());
         return {
           ...DEFAULT_SANDBOX_STATE,
           ...parsed,
+          ...lifecycle,
           testingState: {
             ...DEFAULT_TESTING_STATE,
             ...(parsed.testingState || {}),
@@ -872,8 +882,50 @@ export const SandboxProvider: React.FC<{ children: React.ReactNode }> = ({ child
     return created;
   }, [addToast]);
 
+  const requestSandboxExtension = useCallback(() => {
+    setState(prev => {
+      const status = getSandboxCredentialStatus(prev);
+      if (status !== 'expired' || prev.extensionRequestedAt) return prev;
+      return { ...prev, extensionRequestedAt: new Date().toISOString() };
+    });
+    addToast('Extension Requested', 'PayWay review is pending. Sandbox calls remain blocked until approval.', 'info');
+  }, [addToast]);
+
+  const approveSandboxExtension = useCallback(() => {
+    setState(prev => {
+      if (!prev.extensionRequestedAt) return prev;
+      const approvedAt = new Date();
+      return {
+        ...prev,
+        activatedAt: approvedAt.toISOString(),
+        expiresAt: addCalendarMonths(approvedAt, 3).toISOString(),
+        extensionRequestedAt: undefined,
+        extensionApprovedAt: approvedAt.toISOString(),
+      };
+    });
+    addToast('Sandbox Extended', 'Your existing credentials remain active for another three calendar months.', 'success');
+  }, [addToast]);
+
+  const getCurrentSandboxCredentialStatus = useCallback(() => getSandboxCredentialStatus(state), [state]);
+
+  const guardSandboxAccess = useCallback(() => {
+    const status = getSandboxCredentialStatus(state);
+    if (status === 'active' || status === 'expiring_soon') return true;
+    addApiLog({
+      method: 'POST', endpoint: '/api/v1/purchase/create_qr', status: 403,
+      result: status === 'expired' ? 'SANDBOX_CREDENTIALS_EXPIRED' : 'SANDBOX_EXTENSION_PENDING',
+      category: 'error', latencyMs: 18,
+      requestHeaders: { 'X-PayWay-Merchant-Id': state.merchantId },
+      responseHeaders: { 'Content-Type': 'application/json' },
+      responseBody: { status: 403, error: status === 'expired' ? 'SANDBOX_CREDENTIALS_EXPIRED' : 'SANDBOX_EXTENSION_PENDING', message: status === 'expired' ? 'Sandbox credentials have expired.' : 'Sandbox extension request is pending approval.' },
+      errorInfo: { code: '403_SANDBOX_ACCESS_BLOCKED', message: status === 'expired' ? 'Sandbox credentials have expired.' : 'Sandbox extension request is pending approval.', troubleshooting: 'Request an extension and wait for approval.', suggestion: 'Use the credential lifecycle card to request or approve an extension.' },
+    });
+    addToast('Sandbox Access Blocked', status === 'expired' ? 'Your credentials have expired.' : 'Your extension request is still pending.', 'error');
+    return false;
+  }, [state, addApiLog, addToast]);
+
   const resetToDefaults = useCallback(() => {
-    setState(DEFAULT_SANDBOX_STATE);
+    setState({ ...DEFAULT_SANDBOX_STATE, ...createSandboxLifecycle(new Date()) });
     setTransactions([]);
     setApiLogs([]);
     localStorage.removeItem('payway_sandbox_state');
@@ -923,6 +975,10 @@ export const SandboxProvider: React.FC<{ children: React.ReactNode }> = ({ child
     setDevSidebarOpen,
     setSelectedActivityLogId,
     resetToDefaults,
+    requestSandboxExtension,
+    approveSandboxExtension,
+    getSandboxCredentialStatus: getCurrentSandboxCredentialStatus,
+    guardSandboxAccess,
   }), [
     state,
     transactions,
@@ -956,6 +1012,10 @@ export const SandboxProvider: React.FC<{ children: React.ReactNode }> = ({ child
     removeToast,
     openAskNaviWithQuery,
     resetToDefaults,
+    requestSandboxExtension,
+    approveSandboxExtension,
+    getCurrentSandboxCredentialStatus,
+    guardSandboxAccess,
   ]);
 
   return (

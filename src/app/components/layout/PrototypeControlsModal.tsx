@@ -1,5 +1,6 @@
 import React from 'react';
 import { useSandbox, SAMPLE_API_LOGS } from '../../context/SandboxContext';
+import { addCalendarMonths } from '../../utils/sandboxLifecycle';
 
 interface PrototypeControlsModalProps {
   isOpen: boolean;
@@ -15,6 +16,28 @@ export const PrototypeControlsModal: React.FC<PrototypeControlsModalProps> = ({ 
     const now = new Date();
 
     switch (presetName) {
+      case 'sandbox_active':
+        updateState({ activatedAt: now.toISOString(), expiresAt: addCalendarMonths(now, 3).toISOString(), extensionRequestedAt: undefined, extensionApprovedAt: undefined });
+        addToast('Preset Applied: Sandbox Active', 'Credentials active for three calendar months', 'success');
+        break;
+      case 'expiring_soon': {
+        const activatedAt = new Date(now.getTime() - 75 * 86400000);
+        updateState({ activatedAt: activatedAt.toISOString(), expiresAt: addCalendarMonths(activatedAt, 3).toISOString(), extensionRequestedAt: undefined });
+        addToast('Preset Applied: Expiring Soon', 'Credentials are within the 14-day warning window', 'warning');
+        break;
+      }
+      case 'expired':
+        updateState({ activatedAt: addCalendarMonths(now, -4).toISOString(), expiresAt: addCalendarMonths(now, -1).toISOString(), extensionRequestedAt: undefined });
+        addToast('Preset Applied: Sandbox Expired', 'QR simulations will be blocked with a 403', 'warning');
+        break;
+      case 'extension_requested':
+        updateState({ activatedAt: addCalendarMonths(now, -4).toISOString(), expiresAt: addCalendarMonths(now, -1).toISOString(), extensionRequestedAt: now.toISOString() });
+        addToast('Preset Applied: Extension Requested', 'Approval is pending and Sandbox calls are blocked', 'info');
+        break;
+      case 'sandbox_extended':
+        updateState({ activatedAt: now.toISOString(), expiresAt: addCalendarMonths(now, 3).toISOString(), extensionRequestedAt: undefined, extensionApprovedAt: now.toISOString() });
+        addToast('Preset Applied: Sandbox Extended', 'Existing credentials restored for three calendar months', 'success');
+        break;
       case 'first_time':
         setApiLogs([]);
         setTransactions([]);
@@ -226,6 +249,18 @@ export const PrototypeControlsModal: React.FC<PrototypeControlsModalProps> = ({ 
         {/* PRESET LIST */}
         <div className="p-5 space-y-2 max-h-[420px] overflow-y-auto">
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+            {[
+              ['sandbox_active', 'Sandbox Active', 'Fresh three-month credential lifecycle.'],
+              ['expiring_soon', 'Expiring Soon', 'Credentials within the 14-day warning window.'],
+              ['expired', 'Sandbox Expired', 'Expired credentials with blocked requests.'],
+              ['extension_requested', 'Extension Requested', 'Expired credentials awaiting approval.'],
+              ['sandbox_extended', 'Sandbox Extended', 'Approval restores access with the same keys.'],
+            ].map(([id, label, description]) => (
+              <button key={id} onClick={() => applyPreset(id)} className="p-3 bg-slate-800 hover:bg-slate-700/80 border border-slate-700 rounded-xl text-left transition-colors cursor-pointer">
+                <div className="text-xs font-bold text-cyan-300">{label}</div>
+                <div className="text-[10px] text-slate-400 mt-0.5">{description}</div>
+              </button>
+            ))}
             <button
               onClick={() => applyPreset('first_time')}
               className="p-3 bg-slate-800 hover:bg-slate-700/80 border border-slate-700 rounded-xl text-left transition-colors cursor-pointer"

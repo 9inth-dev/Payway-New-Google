@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { useSandbox } from '../../context/SandboxContext';
 import { SANDBOX_CREDENTIALS } from '../../constants/sandboxCredentials';
-import { Key, Copy, Check, Eye, EyeOff, ChevronDown, ChevronUp } from 'lucide-react';
+import { Key, Copy, Check, Eye, EyeOff, ChevronDown, ChevronUp, Clock, AlertTriangle, RefreshCw } from 'lucide-react';
+import { formatSandboxDate, getSandboxAccessMessage, getSandboxDaysRemaining } from '../../utils/sandboxLifecycle';
 
 interface CredentialCardProps {
   title?: string;
@@ -16,7 +17,9 @@ export const CredentialCard: React.FC<CredentialCardProps> = ({
   showMerchantId = true,
   showWebhook = false,
 }) => {
-  const { state, updateState, addToast } = useSandbox();
+  const { state, updateState, addToast, getSandboxCredentialStatus, requestSandboxExtension, approveSandboxExtension } = useSandbox();
+  const lifecycleStatus = getSandboxCredentialStatus();
+  const daysRemaining = getSandboxDaysRemaining(state.expiresAt);
 
   const merchantId = state.merchantId || SANDBOX_CREDENTIALS.merchantId;
   const apiKey = state.apiKey || SANDBOX_CREDENTIALS.apiKey;
@@ -66,6 +69,18 @@ export const CredentialCard: React.FC<CredentialCardProps> = ({
             )}
           </div>
         </div>
+      </div>
+
+      <div className={`rounded-lg border px-3.5 py-3 flex flex-col sm:flex-row sm:items-center justify-between gap-3 ${lifecycleStatus === 'active' ? 'bg-emerald-50 border-emerald-200' : lifecycleStatus === 'expiring_soon' ? 'bg-amber-50 border-amber-200' : 'bg-rose-50 border-rose-200'}`}>
+        <div className="flex items-start gap-2.5">
+          {lifecycleStatus === 'active' ? <Clock className="w-4 h-4 text-emerald-700 mt-0.5" /> : <AlertTriangle className="w-4 h-4 text-amber-700 mt-0.5" />}
+          <div>
+            <div className="text-xs font-bold text-gray-800">Sandbox access: {lifecycleStatus === 'extension_requested' ? 'Extension requested' : lifecycleStatus.replace('_', ' ')}</div>
+            <p className="text-[11px] text-gray-600 mt-0.5">{getSandboxAccessMessage(lifecycleStatus)} Expires {formatSandboxDate(state.expiresAt)}{daysRemaining !== null && daysRemaining >= 0 ? ` (${daysRemaining} days)` : ''}.</p>
+          </div>
+        </div>
+        {lifecycleStatus === 'expired' && <button type="button" onClick={requestSandboxExtension} className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md bg-gray-900 text-white text-[11px] font-semibold hover:bg-gray-800"><RefreshCw className="w-3.5 h-3.5" /> Request extension</button>}
+        {lifecycleStatus === 'extension_requested' && <button type="button" onClick={approveSandboxExtension} className="text-[11px] font-semibold text-gray-700 underline underline-offset-2">Simulate approval</button>}
       </div>
 
       {/* Credential Rows Container */}
