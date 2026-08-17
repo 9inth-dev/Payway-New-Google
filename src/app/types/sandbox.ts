@@ -89,6 +89,8 @@ export interface ProductionReadiness {
   kycApproved: boolean;
 }
 
+export type SandboxCredentialStatus = 'active' | 'expiring_soon' | 'expired' | 'extension_requested';
+
 export interface SandboxState {
   isLoggedIn: boolean;
   firstTimeUser: boolean;
@@ -117,6 +119,12 @@ export interface SandboxState {
   productionCredentialsSentAt?: string;
   productionMerchantEmail?: string;
   productionApiKey?: string;
+
+  // Sandbox credential lifecycle
+  activatedAt: string;
+  expiresAt: string;
+  extensionRequestedAt?: string;
+  extensionApprovedAt?: string;
   
   // Sandbox Credentials (Confirmed PayWay Sandbox structure)
   merchantId: string;

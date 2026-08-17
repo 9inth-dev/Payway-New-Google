@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 import { useSandbox } from '../context/SandboxContext';
 import { PageHeader } from '../components/common/PageHeader';
 import { StatusBadge } from '../components/common/StatusBadge';
@@ -29,8 +29,10 @@ export const QrApiPage: React.FC = () => {
     addToast,
     uploadEvidence,
     removeEvidence,
+    apiLogs,
   } = useSandbox();
 
+  const startBuildingRef = useRef<HTMLDivElement>(null);
   const [showSimulator, setShowSimulator] = useState(false);
   const [simulatorMode, setSimulatorMode] = useState<SimulatorScenarioMode>('valid_qr');
   const [showApplyModal, setShowApplyModal] = useState(false);
@@ -71,6 +73,15 @@ export const QrApiPage: React.FC = () => {
   };
 
   const verifiedCount = getVerifiedRequirementsCount(state);
+  const hasCreatedQrIntegration = Boolean(state.hasCreatedFirstIntegration || state.hasIntegration || (state.qrIntegrationStatus && state.qrIntegrationStatus !== 'not_started'));
+  const hasSuccessfulSandboxApiCall = Boolean(
+    state.hasMadeFirstApiCall ||
+    apiLogs?.some(log => log.status >= 200 && log.status < 300) ||
+    state.testingState?.qrGenerated?.status === 'verified' ||
+    transactions?.some(transaction => transaction.status === 'SUCCESS' || transaction.status === 'success' || transaction.status === 'completed')
+  );
+  const showGettingStarted = hasCreatedQrIntegration && !hasSuccessfulSandboxApiCall;
+  const productionAccessRequested = state.productionAccessStatus !== 'sandbox' || state.reviewStatus !== 'none';
   const ts = state.testingState || {
     latestGenerateQrEndpoint: { status: 'not_detected' },
     lifetimeParameter: { status: 'not_detected' },
@@ -155,6 +166,38 @@ export const QrApiPage: React.FC = () => {
       {/* TAB 1: OVERVIEW */}
       {activeTab === 'overview' && (
         <div className="flex flex-col gap-6">
+          {showGettingStarted && (
+            <section className="bg-cyan-50/60 rounded-xl border border-cyan-200 p-5 shadow-sm" aria-labelledby="qr-getting-started-title">
+              <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+                <div className="max-w-2xl">
+                  <h2 id="qr-getting-started-title" className="text-base font-bold text-gray-900">Start your QR API integration</h2>
+                  <p className="mt-1 text-sm leading-relaxed text-gray-600">Use your Sandbox credentials and the quick start example to make your first QR API request. We&apos;ll automatically track your progress as you build and test.</p>
+                  <div className="mt-3 flex flex-wrap gap-x-4 gap-y-1.5 text-[11px] font-medium text-gray-500">
+                    <span>1. Use your Sandbox credentials</span>
+                    <span>2. Make your first Generate QR request</span>
+                    <span>3. Test a successful payment</span>
+                  </div>
+                </div>
+                <div className="flex shrink-0 flex-wrap items-center gap-2">
+                  <button
+                    type="button"
+                    onClick={() => startBuildingRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })}
+                    className="inline-flex items-center rounded-lg bg-[#00B4CC] px-4 py-2 text-xs font-semibold text-white transition-colors hover:bg-[#009cb2]"
+                  >
+                    Start building →
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setRoute('/developer/docs')}
+                    className="inline-flex items-center rounded-lg border border-gray-200 bg-white px-3 py-2 text-xs font-semibold text-gray-700 transition-colors hover:bg-gray-50"
+                  >
+                    View API documentation
+                  </button>
+                </div>
+              </div>
+            </section>
+          )}
+
           {/* SECTION: PRODUCTION READINESS */}
           {state.productionAccessStatus === 'sandbox' && state.reviewStatus !== 'approved' && (
             <div>
@@ -177,21 +220,25 @@ export const QrApiPage: React.FC = () => {
                     <p className="text-xs text-gray-500 mt-1 max-w-xl leading-relaxed">
                       {verifiedCount === 5
                         ? 'You have tested everything and all requirements look good! You can now request production access.'
+                        : showGettingStarted
+                        ? 'PayWay will automatically verify these requirements as you build and test your integration.'
                         : 'Build and test normally. PayWay will automatically verify supported requirements from your sandbox activity.'}
                     </p>
                   </div>
                 </div>
 
-                <button
-                  onClick={() => setRoute('/integrations/qr-api/production')}
-                  className={`px-4 py-2 text-xs font-semibold rounded-lg transition-colors shrink-0 cursor-pointer self-start sm:self-center ${
-                    verifiedCount === 5 
-                      ? 'bg-[#00B4CC] text-white hover:bg-[#009cb2]' 
-                      : 'bg-gray-900 text-white hover:bg-gray-800'
-                  }`}
-                >
-                  {verifiedCount === 5 ? 'Request production access →' : 'View testing →'}
-                </button>
+                {!productionAccessRequested && (
+                  <button
+                    onClick={() => setRoute(verifiedCount === 5 ? '/integrations/qr-api/production' : '/integrations/qr-api/testing')}
+                    className={`px-4 py-2 text-xs font-semibold rounded-lg transition-colors shrink-0 cursor-pointer self-start sm:self-center ${
+                      verifiedCount === 5
+                        ? 'bg-[#00B4CC] text-white hover:bg-[#009cb2]'
+                        : 'bg-gray-100 text-gray-700 border border-gray-200 hover:bg-gray-200'
+                    }`}
+                  >
+                    {verifiedCount === 5 ? 'Request production access →' : showGettingStarted ? 'View requirements' : 'View testing →'}
+                  </button>
+                )}
               </div>
             </div>
           )}
@@ -209,7 +256,7 @@ export const QrApiPage: React.FC = () => {
           </div>
 
           {/* SECTION: START BUILDING */}
-          <div>
+          <div ref={startBuildingRef} id="start-building">
             <div className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-2.5">
               Start Building
             </div>
@@ -405,15 +452,15 @@ export const QrApiPage: React.FC = () => {
             </div>
 
             <div className="flex items-center gap-2.5 shrink-0 self-start md:self-center">
-              {verifiedCount === 5 && (
-                <button
-                  onClick={() => setRoute('/integrations/qr-api/production')}
-                  className="px-3.5 py-2 text-xs font-bold rounded-lg text-white bg-[#00B4CC] hover:bg-[#009cb2] transition-colors cursor-pointer flex items-center gap-1.5 shadow-xs"
-                >
-                  <span>Request production access</span>
-                  <span>→</span>
-                </button>
-              )}
+  {verifiedCount === 5 && !productionAccessRequested && (
+  <button
+  onClick={() => setRoute('/integrations/qr-api/production')}
+  className="px-3.5 py-2 text-xs font-bold rounded-lg text-white bg-[#00B4CC] hover:bg-[#009cb2] transition-colors cursor-pointer flex items-center gap-1.5 shadow-xs"
+  >
+  <span>Request production access</span>
+  <span>→</span>
+  </button>
+  )}
 
               <button
                 onClick={() => {

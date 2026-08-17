@@ -49,7 +49,7 @@ export const QrSimulatorModal: React.FC<QrSimulatorModalProps> = ({
   onClose,
   initialMode = 'valid_qr',
 }) => {
-  const { state, updateTestingState, addTransaction, addToast, addApiLog } = useSandbox();
+  const { state, updateTestingState, addTransaction, addToast, addApiLog, guardSandboxAccess } = useSandbox();
 
   const [activeScenario, setActiveScenario] = useState<SimulatorScenarioMode>(initialMode);
   const [currency, setCurrency] = useState<'USD' | 'KHR'>('USD');
@@ -77,6 +77,11 @@ export const QrSimulatorModal: React.FC<QrSimulatorModalProps> = ({
 
   const handleRunSimulation = () => {
     if (isSimulating) return;
+    if (!guardSandboxAccess()) {
+      setEvents([{ id: 'blocked', title: 'POST /api/v1/purchase/create_qr', status: 'failed', details: '403 Forbidden — Sandbox credentials are not currently active', timestamp: new Date().toLocaleTimeString() }]);
+      setSimulationCompleted(true);
+      return;
+    }
     setIsSimulating(true);
     setEvents([]);
     setSimulationCompleted(false);
