@@ -1,8 +1,11 @@
 import React from 'react';
 import { useSandbox } from '../context/SandboxContext';
 import { CredentialCard } from '../components/common/CredentialCard';
+import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '../components/common/Card';
+import { StatusBadge, StatusVariant } from '../components/common/StatusBadge';
 import { getVerifiedRequirementsCount, isTechnicalTestingComplete, isUiEvidenceComplete } from '../utils/readiness';
 import { AttentionCard } from '../components/qr/AttentionCard';
+import { QrCode, ArrowRight } from 'lucide-react';
 
 export const HomePage: React.FC = () => {
   const {
@@ -187,82 +190,66 @@ export const HomePage: React.FC = () => {
         ) : (
           /* EXISTING USER INTEGRATIONS LIST */
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {/* Active QR API Card */}
-            <div className="bg-white rounded-xl border border-cyan-200 shadow-2xs p-5 flex flex-col justify-between hover:border-cyan-300 transition-all">
-              <div>
-                <div className="flex items-center justify-between mb-3">
+            {/* Active QR API Card - Standardized */}
+            <Card className="hover:border-cyan-300 transition-all shadow-2xs border-cyan-200">
+              <CardHeader
+                action={
                   <div className="flex items-center gap-2">
-                    <div className="w-8 h-8 rounded-lg bg-cyan-50 text-[#00B4CC] flex items-center justify-center font-bold">
-                      <svg width="18" height="18" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-                        <rect x="3" y="3" width="7" height="7" />
-                        <rect x="14" y="3" width="7" height="7" />
-                        <rect x="14" y="14" width="7" height="7" />
-                        <rect x="3" y="14" width="7" height="7" />
-                      </svg>
-                    </div>
-                    <div>
-                      <h3 className="text-base font-bold text-gray-800">QR API</h3>
-                      <span className="text-[11px] text-gray-500 font-medium">
-                        {state.productionAccessStatus === 'full_production' || state.reviewStatus === 'approved'
-                          ? 'Live Production Access'
-                          : state.reviewStatus === 'submitted'
-                          ? 'Review Pending (2-3 days)'
-                          : state.reviewStatus === 'under_review'
-                          ? 'Under Active Review'
-                          : state.reviewStatus === 'changes_requested'
-                          ? 'Changes Requested'
-                          : state.reviewStatus === 'resubmitted'
-                          ? 'Resubmitted for Review'
-                          : 'Sandbox Environment'}
-                      </span>
-                    </div>
-                  </div>
-                  <span className={`px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider flex items-center gap-1.5 border ${
-                    state.productionAccessStatus === 'full_production' || state.reviewStatus === 'approved'
-                      ? 'bg-emerald-50 text-emerald-700 border-emerald-200'
-                      : state.reviewStatus === 'changes_requested'
-                      ? 'bg-amber-50 text-amber-800 border-amber-200'
-                      : state.reviewStatus === 'submitted' || state.reviewStatus === 'under_review' || state.reviewStatus === 'resubmitted'
-                      ? 'bg-cyan-50 text-cyan-800 border-cyan-300'
-                      : 'bg-gray-100 text-gray-700 border-gray-200'
-                  }`}>
-                    <span className={`w-1.5 h-1.5 rounded-full ${
-                      state.productionAccessStatus === 'full_production' || state.reviewStatus === 'approved'
-                        ? 'bg-emerald-500'
+                    <span className="text-[10px] font-bold text-gray-600 bg-gray-100 border border-gray-200 px-2.5 py-0.5 rounded-md">
+                      NBC KHQR
+                    </span>
+                    <StatusBadge status={
+                      state.productionAccessStatus === 'full_production' || state.reviewStatus === 'approved' 
+                        ? 'approved' as StatusVariant
                         : state.reviewStatus === 'changes_requested'
-                        ? 'bg-amber-500'
+                        ? 'changes_requested' as StatusVariant
                         : state.reviewStatus === 'submitted' || state.reviewStatus === 'under_review' || state.reviewStatus === 'resubmitted'
-                        ? 'bg-cyan-500 animate-pulse'
-                        : 'bg-gray-400'
-                    }`} />
-                    {state.productionAccessStatus === 'full_production' || state.reviewStatus === 'approved'
-                      ? 'Approved'
-                      : state.reviewStatus === 'changes_requested'
-                      ? 'Action Required'
-                      : state.reviewStatus === 'submitted'
-                      ? 'Submitted'
-                      : state.reviewStatus === 'under_review'
-                      ? 'Under Review'
-                      : state.reviewStatus === 'resubmitted'
-                      ? 'Resubmitted'
-                      : 'Sandbox'}
-                  </span>
-                </div>
+                        ? 'under_review' as StatusVariant
+                        : 'sandbox' as StatusVariant
+                    } label={
+                      state.productionAccessStatus === 'full_production' || state.reviewStatus === 'approved'
+                        ? 'Approved'
+                        : state.reviewStatus === 'changes_requested'
+                        ? 'Action Required'
+                        : state.reviewStatus === 'submitted'
+                        ? 'Submitted'
+                        : state.reviewStatus === 'under_review'
+                        ? 'Under Review'
+                        : state.reviewStatus === 'resubmitted'
+                        ? 'Resubmitted'
+                        : 'Sandbox'
+                    } size="sm" />
+                  </div>
+                }
+              >
+                <CardTitle icon={<QrCode className="w-5 h-5" />}>
+                  QR API
+                </CardTitle>
+                <CardDescription>
+                  {state.productionAccessStatus === 'full_production' || state.reviewStatus === 'approved'
+                    ? 'Live Production Access'
+                    : state.reviewStatus === 'submitted'
+                    ? 'Review Pending (2-3 days)'
+                    : state.reviewStatus === 'under_review'
+                    ? 'Under Active Review'
+                    : state.reviewStatus === 'changes_requested'
+                    ? 'Changes Requested'
+                    : state.reviewStatus === 'resubmitted'
+                    ? 'Resubmitted for Review'
+                    : 'Sandbox Environment'}
+                </CardDescription>
+              </CardHeader>
 
+              {/* Status & Activity Section */}
+              <div className="px-6 py-4 bg-gray-50/70 border-y border-gray-100">
                 {state.productionAccessStatus !== 'sandbox' || state.reviewStatus !== 'none' ? (
-                  <div className="grid grid-cols-2 gap-3 my-4 bg-gray-50/70 rounded-lg p-3 border border-gray-100 text-xs">
+                  <div className="grid grid-cols-2 gap-3 text-xs">
                     <div>
-                      <span className="text-[10px] font-semibold text-gray-400 uppercase block">
-                        Review Timeline
-                      </span>
-                      <span className="font-bold text-gray-800 mt-0.5 block">
-                        {state.reviewStatus === 'approved' ? 'Complete' : '2-3 Working Days'}
-                      </span>
+                      <span className="text-[10px] font-semibold text-gray-400 uppercase block">Review Timeline</span>
+                      <span className="font-bold text-gray-800 mt-0.5 block">{state.reviewStatus === 'approved' ? 'Complete' : '2-3 Working Days'}</span>
                     </div>
                     <div>
-                      <span className="text-[10px] font-semibold text-gray-400 uppercase block">
-                        Review Status
-                      </span>
+                      <span className="text-[10px] font-semibold text-gray-400 uppercase block">Review Status</span>
                       <span className="font-bold text-emerald-700 mt-0.5 block">
                         {(() => {
                           switch (state.reviewStatus) {
@@ -278,49 +265,33 @@ export const HomePage: React.FC = () => {
                     </div>
                   </div>
                 ) : isTechnicalTestingComplete(state) && !isUiEvidenceComplete(state) ? (
-                  <div className="grid grid-cols-2 gap-3 my-4 bg-amber-50/60 border border-amber-200/80 rounded-lg p-3 text-xs">
+                  <div className="grid grid-cols-2 gap-3 text-xs">
                     <div>
-                      <span className="text-[10px] font-semibold text-amber-800 uppercase block">
-                        Readiness Status
-                      </span>
-                      <span className="font-bold text-amber-900 mt-0.5 block">
-                        Almost ready
-                      </span>
+                      <span className="text-[10px] font-semibold text-amber-800 uppercase block">Readiness Status</span>
+                      <span className="font-bold text-amber-900 mt-0.5 block">Almost ready</span>
                     </div>
                     <div>
-                      <span className="text-[10px] font-semibold text-amber-800 uppercase block">
-                        Action Required
-                      </span>
-                      <span className="font-bold text-amber-900 mt-0.5 block">
-                        UI evidence required
-                      </span>
+                      <span className="text-[10px] font-semibold text-amber-800 uppercase block">Action Required</span>
+                      <span className="font-bold text-amber-900 mt-0.5 block">UI evidence required</span>
                     </div>
                   </div>
                 ) : (
-                  <div className="grid grid-cols-2 gap-3 my-4 bg-gray-50/70 rounded-lg p-3 border border-gray-100 text-xs">
+                  <div className="grid grid-cols-2 gap-3 text-xs">
                     <div>
-                      <span className="text-[10px] font-semibold text-gray-400 uppercase block">
-                        Production Readiness
-                      </span>
-                      <span className="font-bold text-gray-800 mt-0.5 block">
-                        {verifiedCount} of 5 verified
-                      </span>
+                      <span className="text-[10px] font-semibold text-gray-400 uppercase block">Production Readiness</span>
+                      <span className="font-bold text-gray-800 mt-0.5 block">{verifiedCount} of 5 verified</span>
                     </div>
                     <div>
-                      <span className="text-[10px] font-semibold text-gray-400 uppercase block">
-                        Last Activity
-                      </span>
+                      <span className="text-[10px] font-semibold text-gray-400 uppercase block">Last Activity</span>
                       <span className="font-semibold text-gray-700 mt-0.5 block truncate">
-                        {latestTx
-                          ? `${latestTx.tranId} (${latestTx.currency} ${latestTx.amount.toFixed(2)})`
-                          : 'No activity yet'}
+                        {latestTx ? `${latestTx.tranId} (${latestTx.currency} ${latestTx.amount.toFixed(2)})` : 'No activity yet'}
                       </span>
                     </div>
                   </div>
                 )}
               </div>
 
-              <div className="pt-2 flex items-center justify-between border-t border-gray-50">
+              <CardContent className="flex items-center justify-between">
                 <span className="text-[11px] text-emerald-600 font-semibold flex items-center gap-1">
                   <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
                   {state.reviewStatus === 'approved'
@@ -331,19 +302,20 @@ export const HomePage: React.FC = () => {
                 </span>
                 <button
                   onClick={() => setRoute(state.reviewStatus !== 'none' || isTechnicalTestingComplete(state) ? '/integrations/qr-api/production' : '/integrations/qr-api')}
-                  className="px-4 py-2 rounded-lg text-xs font-semibold text-white transition-colors cursor-pointer"
+                  className="text-xs font-semibold px-4 py-2 rounded-lg text-white shadow-2xs transition-all hover:opacity-95 cursor-pointer flex items-center justify-center gap-2"
                   style={{ backgroundColor: '#00B4CC' }}
-                  onMouseEnter={e => ((e.currentTarget as HTMLElement).style.backgroundColor = '#0A9BB0')}
-                  onMouseLeave={e => ((e.currentTarget as HTMLElement).style.backgroundColor = '#00B4CC')}
                 >
-                  {state.reviewStatus !== 'none'
-                    ? 'View review status'
-                    : isTechnicalTestingComplete(state)
-                    ? 'Request production access →'
-                    : 'Continue integration →'}
+                  <span>
+                    {state.reviewStatus !== 'none'
+                      ? 'View review status'
+                      : isTechnicalTestingComplete(state)
+                      ? 'Request production access'
+                      : 'Continue integration'}
+                  </span>
+                  <ArrowRight className="w-3.5 h-3.5" />
                 </button>
-              </div>
-            </div>
+              </CardContent>
+            </Card>
           </div>
         )}
       </div>
