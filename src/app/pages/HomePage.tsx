@@ -52,7 +52,7 @@ export const HomePage: React.FC = () => {
   } else if (technicalComplete && evidenceComplete) {
     qrStage = 'Ready for Production Access'; qrProgressLabel = 'PRODUCTION READINESS'; qrProgressValue = 'Ready to request access'; qrStatusLabel = 'Production Ready'; qrCtaLabel = 'Request production access'; qrCtaRoute = '/integrations/qr-api/production'; qrStatusVariant = 'active';
   } else if (technicalComplete) {
-    qrStage = 'UI Evidence'; qrProgressLabel = 'UI EVIDENCE'; qrProgressValue = `${evidenceCount} of 2 uploaded`; qrStatusLabel = 'Evidence Required'; qrCtaLabel = 'Upload UI evidence'; qrCtaRoute = '/integrations/qr-api/production'; qrStatusVariant = 'pending';
+    qrStage = 'UI Evidence'; qrProgressLabel = 'UI EVIDENCE'; qrProgressValue = `${evidenceCount} of 2 uploaded`; qrStatusLabel = 'Evidence Required'; qrCtaLabel = 'View testing'; qrCtaRoute = '/integrations/qr-api/testing'; qrStatusVariant = 'pending';
   }
 
   const lastActivityLabel = latestActivity
