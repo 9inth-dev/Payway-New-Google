@@ -3,7 +3,7 @@ import { useSandbox } from '../context/SandboxContext';
 import { CredentialCard } from '../components/common/CredentialCard';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '../components/common/Card';
 import { StatusBadge, StatusVariant } from '../components/common/StatusBadge';
-import { getVerifiedRequirementsCount, isTechnicalTestingComplete, isUiEvidenceComplete } from '../utils/readiness';
+import { getVerifiedRequirementsCount, getUiEvidenceAttachedCount, isTechnicalTestingComplete, isUiEvidenceComplete } from '../utils/readiness';
 import { AttentionCard } from '../components/qr/AttentionCard';
 import { QrCode, ArrowRight } from 'lucide-react';
 
@@ -21,8 +21,43 @@ export const HomePage: React.FC = () => {
   const isFirstTime = !!state.firstTimeUser;
   const displayLogs = isFirstTime ? [] : (apiLogs || []);
 
-  const verifiedCount = getVerifiedRequirementsCount(state.productionReadiness);
+  const verifiedCount = getVerifiedRequirementsCount(state);
+  const evidenceCount = getUiEvidenceAttachedCount(state);
+  const technicalComplete = isTechnicalTestingComplete(state);
+  const evidenceComplete = isUiEvidenceComplete(state);
+  const isLive = state.productionAccessStatus === 'live' || state.productionAccessStatus === 'full_production';
+  const isApproved = state.productionAccessStatus === 'approved' || state.reviewStatus === 'approved';
+  const hasProductionApplication = state.productionAccessStatus !== 'sandbox' || state.reviewStatus !== 'none';
   const latestTx = !isFirstTime && transactions && transactions.length > 0 ? transactions[0] : null;
+  const latestActivity = !isFirstTime && displayLogs.length > 0 ? displayLogs[0] : null;
+
+  let qrStage = 'Technical Testing';
+  let qrProgressLabel = 'TECHNICAL TESTING';
+  let qrProgressValue = `${verifiedCount} of 5 verified`;
+  let qrStatusLabel = 'Sandbox Testing';
+  let qrCtaLabel = 'Continue testing';
+  let qrCtaRoute = '/integrations/qr-api/testing';
+  let qrStatusVariant: StatusVariant = 'testing';
+
+  if (isLive) {
+    qrStage = 'Live'; qrProgressLabel = 'PRODUCTION ACCESS'; qrProgressValue = 'Live'; qrStatusLabel = 'Live'; qrCtaLabel = 'View integration'; qrCtaRoute = '/integrations/qr-api/production'; qrStatusVariant = 'live';
+  } else if (isApproved) {
+    qrStage = 'Production Approved'; qrProgressLabel = 'PRODUCTION ACCESS'; qrProgressValue = 'Approved'; qrStatusLabel = 'Production Approved'; qrCtaLabel = 'View integration'; qrCtaRoute = '/integrations/qr-api/production'; qrStatusVariant = 'approved';
+  } else if (state.reviewStatus === 'changes_requested' || state.productionAccessStatus === 'changes_requested') {
+    qrStage = 'Changes Requested'; qrProgressLabel = 'PRODUCTION REVIEW'; qrProgressValue = 'Changes requested'; qrStatusLabel = 'Changes Requested'; qrCtaLabel = 'Review feedback'; qrCtaRoute = '/integrations/qr-api/production'; qrStatusVariant = 'changes_requested';
+  } else if (state.reviewStatus === 'submitted' || state.reviewStatus === 'under_review' || state.reviewStatus === 'resubmitted' || state.productionAccessStatus === 'submitted' || state.productionAccessStatus === 'under_review' || state.productionAccessStatus === 'resubmitted') {
+    qrStage = 'Under Review'; qrProgressLabel = 'PRODUCTION REVIEW'; qrProgressValue = state.reviewStatus === 'submitted' || state.productionAccessStatus === 'submitted' ? 'Submitted' : 'Under review'; qrStatusLabel = 'Under Review'; qrCtaLabel = 'View review status'; qrCtaRoute = '/integrations/qr-api/production'; qrStatusVariant = state.reviewStatus === 'resubmitted' ? 'resubmitted' : 'under_review';
+  } else if (hasProductionApplication) {
+    qrStage = 'Production Application'; qrProgressLabel = 'PRODUCTION APPLICATION'; qrProgressValue = 'In progress'; qrStatusLabel = 'Application in Progress'; qrCtaLabel = 'Continue application'; qrCtaRoute = '/integrations/qr-api/production'; qrStatusVariant = 'in_progress';
+  } else if (technicalComplete && evidenceComplete) {
+    qrStage = 'Ready for Production Access'; qrProgressLabel = 'PRODUCTION READINESS'; qrProgressValue = 'Ready to request access'; qrStatusLabel = 'Production Ready'; qrCtaLabel = 'Request production access'; qrCtaRoute = '/integrations/qr-api/production'; qrStatusVariant = 'active';
+  } else if (technicalComplete) {
+    qrStage = 'UI Evidence'; qrProgressLabel = 'UI EVIDENCE'; qrProgressValue = `${evidenceCount} of 2 uploaded`; qrStatusLabel = 'Evidence Required'; qrCtaLabel = 'Upload UI evidence'; qrCtaRoute = '/integrations/qr-api/production'; qrStatusVariant = 'pending';
+  }
+
+  const lastActivityLabel = latestActivity
+    ? latestActivity.result || latestActivity.endpoint
+    : latestTx ? `Test payment completed (${latestTx.currency} ${latestTx.amount.toFixed(2)})` : 'No activity yet';
 
   const developerTools = [
     {
@@ -198,27 +233,7 @@ export const HomePage: React.FC = () => {
                     <span className="text-[10px] font-bold text-gray-600 bg-gray-100 border border-gray-200 px-2.5 py-0.5 rounded-md">
                       NBC KHQR
                     </span>
-                    <StatusBadge status={
-                      state.productionAccessStatus === 'full_production' || state.reviewStatus === 'approved' 
-                        ? 'approved' as StatusVariant
-                        : state.reviewStatus === 'changes_requested'
-                        ? 'changes_requested' as StatusVariant
-                        : state.reviewStatus === 'submitted' || state.reviewStatus === 'under_review' || state.reviewStatus === 'resubmitted'
-                        ? 'under_review' as StatusVariant
-                        : 'sandbox' as StatusVariant
-                    } label={
-                      state.productionAccessStatus === 'full_production' || state.reviewStatus === 'approved'
-                        ? 'Approved'
-                        : state.reviewStatus === 'changes_requested'
-                        ? 'Action Required'
-                        : state.reviewStatus === 'submitted'
-                        ? 'Submitted'
-                        : state.reviewStatus === 'under_review'
-                        ? 'Under Review'
-                        : state.reviewStatus === 'resubmitted'
-                        ? 'Resubmitted'
-                        : 'Sandbox'
-                    } size="sm" />
+                    <StatusBadge status={qrStatusVariant} label={qrStatusLabel} size="sm" />
                   </div>
                 }
               >
@@ -226,92 +241,39 @@ export const HomePage: React.FC = () => {
                   QR API
                 </CardTitle>
                 <CardDescription>
-                  {state.productionAccessStatus === 'full_production' || state.reviewStatus === 'approved'
-                    ? 'Live Production Access'
-                    : state.reviewStatus === 'submitted'
-                    ? 'Review Pending (2-3 days)'
-                    : state.reviewStatus === 'under_review'
-                    ? 'Under Active Review'
-                    : state.reviewStatus === 'changes_requested'
-                    ? 'Changes Requested'
-                    : state.reviewStatus === 'resubmitted'
-                    ? 'Resubmitted for Review'
-                    : 'Sandbox Environment'}
+                  {qrStage}
                 </CardDescription>
               </CardHeader>
 
-              {/* Status & Activity Section */}
+              {/* Current stage and actual activity */}
               <div className="px-6 py-4 bg-gray-50/70 border-y border-gray-100">
-                {state.productionAccessStatus !== 'sandbox' || state.reviewStatus !== 'none' ? (
-                  <div className="grid grid-cols-2 gap-3 text-xs">
-                    <div>
-                      <span className="text-[10px] font-semibold text-gray-400 uppercase block">Review Timeline</span>
-                      <span className="font-bold text-gray-800 mt-0.5 block">{state.reviewStatus === 'approved' ? 'Complete' : '2-3 Working Days'}</span>
-                    </div>
-                    <div>
-                      <span className="text-[10px] font-semibold text-gray-400 uppercase block">Review Status</span>
-                      <span className="font-bold text-emerald-700 mt-0.5 block">
-                        {(() => {
-                          switch (state.reviewStatus) {
-                            case 'submitted': return 'Submitted';
-                            case 'under_review': return 'Under Review';
-                            case 'changes_requested': return 'Changes Requested';
-                            case 'resubmitted': return 'Resubmitted';
-                            case 'approved': return 'Approved';
-                            default: return 'In Review';
-                          }
-                        })()}
-                      </span>
-                    </div>
+                <div className="grid grid-cols-2 gap-3 text-xs">
+                  <div>
+                    <span className="text-[10px] font-semibold text-gray-400 uppercase block">Current Stage</span>
+                    <span className="font-bold text-gray-800 mt-0.5 block">{qrStage}</span>
                   </div>
-                ) : isTechnicalTestingComplete(state) && !isUiEvidenceComplete(state) ? (
-                  <div className="grid grid-cols-2 gap-3 text-xs">
-                    <div>
-                      <span className="text-[10px] font-semibold text-amber-800 uppercase block">Readiness Status</span>
-                      <span className="font-bold text-amber-900 mt-0.5 block">Almost ready</span>
-                    </div>
-                    <div>
-                      <span className="text-[10px] font-semibold text-amber-800 uppercase block">Action Required</span>
-                      <span className="font-bold text-amber-900 mt-0.5 block">UI evidence required</span>
-                    </div>
+                  <div>
+                    <span className="text-[10px] font-semibold text-gray-400 uppercase block">{qrProgressLabel}</span>
+                    <span className="font-bold text-gray-800 mt-0.5 block">{qrProgressValue}</span>
                   </div>
-                ) : (
-                  <div className="grid grid-cols-2 gap-3 text-xs">
-                    <div>
-                      <span className="text-[10px] font-semibold text-gray-400 uppercase block">Production Readiness</span>
-                      <span className="font-bold text-gray-800 mt-0.5 block">{verifiedCount} of 5 verified</span>
-                    </div>
-                    <div>
-                      <span className="text-[10px] font-semibold text-gray-400 uppercase block">Last Activity</span>
-                      <span className="font-semibold text-gray-700 mt-0.5 block truncate">
-                        {latestTx ? `${latestTx.tranId} (${latestTx.currency} ${latestTx.amount.toFixed(2)})` : 'No activity yet'}
-                      </span>
-                    </div>
-                  </div>
-                )}
+                </div>
+                <div className="mt-3 pt-3 border-t border-gray-100">
+                  <span className="text-[10px] font-semibold text-gray-400 uppercase block">Last Activity</span>
+                  <span className="font-semibold text-gray-700 mt-0.5 block truncate">{lastActivityLabel}</span>
+                </div>
               </div>
 
               <CardContent className="flex items-center justify-between">
                 <span className="text-[11px] text-emerald-600 font-semibold flex items-center gap-1">
                   <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
-                  {state.reviewStatus === 'approved'
-                    ? 'Live Production Active'
-                    : state.reviewStatus !== 'none'
-                    ? 'Sandbox Testing Active'
-                    : 'Integration Active'}
+                  {qrStatusLabel}
                 </span>
                 <button
-                  onClick={() => setRoute(state.reviewStatus !== 'none' || isTechnicalTestingComplete(state) ? '/integrations/qr-api/production' : '/integrations/qr-api')}
+                  onClick={() => setRoute(qrCtaRoute)}
                   className="text-xs font-semibold px-4 py-2 rounded-lg text-white shadow-2xs transition-all hover:opacity-95 cursor-pointer flex items-center justify-center gap-2"
                   style={{ backgroundColor: '#00B4CC' }}
                 >
-                  <span>
-                    {state.reviewStatus !== 'none'
-                      ? 'View review status'
-                      : isTechnicalTestingComplete(state)
-                      ? 'Request production access'
-                      : 'Continue integration'}
-                  </span>
+                  <span>{qrCtaLabel}</span>
                   <ArrowRight className="w-3.5 h-3.5" />
                 </button>
               </CardContent>
