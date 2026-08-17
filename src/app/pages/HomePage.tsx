@@ -3,6 +3,7 @@ import { useSandbox } from '../context/SandboxContext';
 import { CredentialCard } from '../components/common/CredentialCard';
 import { getVerifiedRequirementsCount, isTechnicalTestingComplete, isUiEvidenceComplete } from '../utils/readiness';
 import { AttentionCard } from '../components/qr/AttentionCard';
+import { Clock, AlertTriangle } from 'lucide-react';
 
 export const HomePage: React.FC = () => {
   const {
@@ -12,7 +13,10 @@ export const HomePage: React.FC = () => {
     transactions,
     apiLogs,
     setSelectedActivityLogId,
+    getSandboxCredentialStatus,
   } = useSandbox();
+
+  const lifecycleStatus = getSandboxCredentialStatus();
 
   const hasIntegration = !!state.hasCreatedFirstIntegration || !!state.hasIntegration;
   const isFirstTime = !!state.firstTimeUser;
@@ -117,8 +121,14 @@ export const HomePage: React.FC = () => {
 
       {/* ================= SECTION 2: SANDBOX CREDENTIALS ================= */}
       <div data-tour="credentials">
-        <div className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-3">
-          Sandbox Credentials
+        <div className="flex items-center justify-between gap-3 mb-3">
+          <div className="text-xs font-bold text-gray-400 uppercase tracking-wider">
+            Sandbox Credentials
+          </div>
+          <div className={`rounded-lg border px-2.5 py-1.5 flex items-center gap-1.5 text-[10px] font-semibold whitespace-nowrap ${lifecycleStatus === 'active' ? 'bg-emerald-50 border-emerald-200 text-emerald-700' : lifecycleStatus === 'expiring_soon' ? 'bg-amber-50 border-amber-200 text-amber-700' : 'bg-rose-50 border-rose-200 text-rose-700'}`}>
+            {lifecycleStatus === 'active' ? <Clock className="w-3.5 h-3.5" /> : <AlertTriangle className="w-3.5 h-3.5" />}
+            <span>{lifecycleStatus === 'extension_requested' ? 'Ext. pending' : lifecycleStatus.replace('_', ' ')}</span>
+          </div>
         </div>
         <CredentialCard
           title="Sandbox Credentials"
