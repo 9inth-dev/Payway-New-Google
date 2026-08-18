@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { useSandbox } from '../context/SandboxContext';
 import { CredentialCard } from '../components/common/CredentialCard';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '../components/common/Card';
@@ -15,7 +15,6 @@ export const HomePage: React.FC = () => {
     transactions,
     apiLogs,
     setSelectedActivityLogId,
-    addToast,
   } = useSandbox();
 
   const hasIntegration = !!state.hasCreatedFirstIntegration || !!state.hasIntegration;
@@ -59,10 +58,6 @@ export const HomePage: React.FC = () => {
   const lastActivityLabel = latestActivity
     ? latestActivity.result || latestActivity.endpoint
     : latestTx ? `Test payment completed (${latestTx.currency} ${latestTx.amount.toFixed(2)})` : 'No activity yet';
-
-  if (isFirstTime) {
-    return <FirstTimeDashboard state={state} setRoute={setRoute} addToast={addToast} />;
-  }
 
   const developerTools = [
     {
@@ -384,101 +379,3 @@ export const HomePage: React.FC = () => {
     </div>
   );
 };
-
-function FirstTimeDashboard({
-  state,
-  setRoute,
-  addToast,
-}: {
-  state: ReturnType<typeof useSandbox>['state'];
-  setRoute: (route: string) => void;
-  addToast: (title: string, message?: string, type?: 'success' | 'info' | 'warning' | 'error') => void;
-}) {
-  const [minimized, setMinimized] = useState(false);
-
-  const hasIntegration = Boolean(state.hasCreatedFirstIntegration || state.hasIntegration || state.qrIntegrationStatus !== 'not_started');
-  const hasApiCall = Boolean(state.hasMadeFirstApiCall);
-  const hasPayment = Boolean(state.hasCompletedFirstTestPayment);
-  const hasProductionRequest = state.reviewStatus !== 'none' || state.productionAccessStatus !== 'sandbox';
-  const hasLiveAccess = state.reviewStatus === 'approved' || state.productionAccessStatus === 'full_production' || state.productionCredentialsDeliveryStatus === 'sent';
-  const steps = [hasIntegration, hasApiCall, hasPayment, hasProductionRequest, hasLiveAccess];
-  const completed = steps.filter(Boolean).length;
-  const nextStep = steps.findIndex(step => !step);
-
-  const continueSetup = () => {
-    const routes = ['/integrations', '/integrations/qr-api', '/integrations/qr-api/testing', '/integrations/qr-api/production', '/integrations/qr-api/production'];
-    setRoute(routes[nextStep < 0 ? 0 : nextStep]);
-  };
-
-  const minimize = () => {
-    setMinimized(true);
-    addToast('Setup guide minimized', 'You can continue your setup anytime from the bottom-right corner.', 'info');
-  };
-
-  if (minimized) {
-    return (
-      <>
-        <div className="flex flex-col gap-6 w-full pb-12">
-          <WelcomeHeader />
-          <div data-tour="credentials">
-            <div className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-3">Sandbox Credentials</div>
-            <CredentialCard title="Sandbox Credentials" description="Use these test keys to authenticate your Sandbox API requests." showMerchantId={true} />
-          </div>
-        </div>
-        <button type="button" onClick={() => setMinimized(false)} className="fixed bottom-5 right-5 z-40 flex items-center gap-3 rounded-full border border-gray-200 bg-white px-4 py-3 text-xs font-semibold text-gray-800 shadow-xl hover:border-cyan-400 hover:shadow-2xl">
-          <span className="flex h-5 w-5 items-center justify-center rounded-full border-2 border-cyan-400 text-[9px] font-bold text-[#00B4CC]">{completed}</span>
-          Setup guide <span className="text-[#00B4CC]">· {completed} of 5</span><span className="text-gray-400">↑</span>
-        </button>
-      </>
-    );
-  }
-
-  const taskCopy = [
-    ['Start your first integration', 'Choose a PayWay product and create your first Sandbox integration.'],
-    ['Make your first API call', 'Send your first successful request to a PayWay Sandbox endpoint.'],
-    ['Make your first test payment', 'Complete a successful payment using the PayWay Sandbox simulator.'],
-    ['Request Production Access', 'Complete your requirements and submit your integration for review.'],
-    ['Go live with your first product', 'Get approved and receive your production credentials.'],
-  ];
-
-  return (
-    <div className="flex flex-col gap-6 w-full pb-12">
-      <WelcomeHeader />
-      <section className="rounded-2xl border border-cyan-100 bg-white p-6 shadow-2xs sm:p-8" aria-labelledby="setup-guide-title">
-        <div className="flex flex-col gap-6">
-          <div className="flex items-start justify-between gap-4 border-b border-gray-100 pb-5">
-            <div>
-              <p className="text-xs font-bold uppercase tracking-wider text-[#00B4CC]">Get started with PayWay Sandbox</p>
-              <h2 id="setup-guide-title" className="mt-2 text-2xl font-bold text-[#0D3D4F]">Your setup guide</h2>
-              <p className="mt-2 max-w-2xl text-sm leading-relaxed text-gray-500">Follow these steps to start building and testing safely in Sandbox. Your progress updates automatically as you use PayWay.</p>
-            </div>
-            <button type="button" onClick={minimize} className="shrink-0 rounded-md px-2 py-1 text-xs font-semibold text-gray-400 hover:bg-gray-50 hover:text-gray-700">Close setup guide</button>
-          </div>
-          <div className="flex flex-col gap-3">
-            <div className="flex items-center justify-between text-xs font-semibold text-gray-500"><span>Setup progress</span><span className="text-[#0D3D4F]">{completed} of 5 completed</span></div>
-            <div className="h-2 overflow-hidden rounded-full bg-gray-100"><div className="h-full rounded-full bg-[#00B4CC] transition-all" style={{ width: `${(completed / 5) * 100}%` }} /></div>
-          </div>
-          <div className="grid gap-3 md:grid-cols-2">
-            {taskCopy.map(([title, description], index) => {
-              const complete = steps[index];
-              const active = index === nextStep;
-              return <button type="button" key={title} onClick={active ? continueSetup : undefined} className={`flex items-start gap-3 rounded-xl border p-4 text-left ${complete ? 'border-emerald-100 bg-emerald-50/50' : active ? 'border-cyan-200 bg-cyan-50/50 shadow-sm' : 'border-gray-100 bg-gray-50/50'}`}>
-                <span className={`flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-xs font-bold ${complete ? 'bg-emerald-500 text-white' : active ? 'border-2 border-[#00B4CC] text-[#00B4CC]' : 'border border-gray-300 text-gray-400'}`}>{complete ? '✓' : index + 1}</span>
-                <span><span className={`block text-sm font-semibold ${complete ? 'text-emerald-800' : active ? 'text-[#0D3D4F]' : 'text-gray-500'}`}>{title}</span><span className="mt-1 block text-xs leading-relaxed text-gray-500">{description}</span>{complete && <span className="mt-2 block text-[11px] font-semibold text-emerald-600">Completed</span>}{active && <span className="mt-2 block text-[11px] font-semibold text-[#00B4CC]">Current step</span>}</span>
-              </button>;
-            })}
-          </div>
-          <div className="flex justify-end border-t border-gray-100 pt-5"><button type="button" onClick={continueSetup} className="rounded-lg bg-[#00B4CC] px-5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-[#009cb2]">Continue setup →</button></div>
-        </div>
-      </section>
-      <div data-tour="credentials"><div className="mb-3 text-xs font-bold uppercase tracking-wider text-gray-400">Sandbox Credentials</div><CredentialCard title="Sandbox Credentials" description="Use these test keys to authenticate your Sandbox API requests." showMerchantId={true} /></div>
-    </div>
-  );
-}
-
-function WelcomeHeader() {
-  return <div><h1 className="text-xl font-bold text-[#0D3D4F]">Welcome to PayWay Sandbox, <span className="text-[#00B4CC]">Henry</span></h1><p className="mt-1 text-xs text-gray-500">Build and test PayWay integrations safely before accepting live payments.</p></div>;
-}
-
-
-

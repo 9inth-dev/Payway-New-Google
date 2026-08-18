@@ -6,7 +6,7 @@ export const FloatingSetupGuide: React.FC = () => {
   const [isExpanded, setIsExpanded] = useState(false);
   const [showDismissConfirm, setShowDismissConfirm] = useState(false);
 
-  if (state.setupGuideDismissed || state.firstTimeUser) {
+  if (state.setupGuideDismissed) {
     return null;
   }
 
