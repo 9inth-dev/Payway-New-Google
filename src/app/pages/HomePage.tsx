@@ -120,7 +120,7 @@ export const HomePage: React.FC = () => {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <h1 className="text-xl font-bold" style={{ color: '#0D3D4F' }}>
-            Welcome to PayWay Sandbox, <span style={{ color: '#00B4CC' }}>Henry</span>
+            Welcome back, <span style={{ color: '#00B4CC' }}>Henry</span>
           </h1>
           <p className="text-xs text-gray-500 mt-1">
             Build and test PayWay integrations safely before accepting live payments.
@@ -130,33 +130,6 @@ export const HomePage: React.FC = () => {
 
       {/* Attention Card (If changes requested by ABA PayWay review) */}
       <AttentionCard className="mb-0" />
-
-      {/* ================= SECTION 1: DEVELOPER TOOLS ================= */}
-      <div data-tour="developer-tools">
-        <div className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-3">
-          Developer Tools
-        </div>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5">
-          {developerTools.map(tool => (
-            <button
-              key={tool.title}
-              onClick={tool.onClick}
-              className="bg-white rounded-xl border border-gray-100 shadow-2xs p-4 text-left flex items-center gap-3.5 hover:shadow-md hover:border-cyan-100 transition-all cursor-pointer"
-            >
-              <div
-                className="w-10 h-10 rounded-lg flex items-center justify-center shrink-0"
-                style={{ backgroundColor: tool.bg }}
-              >
-                {tool.icon}
-              </div>
-              <div>
-                <div className="text-xs font-semibold text-gray-800">{tool.title}</div>
-                <div className="text-[11px] text-gray-400 mt-0.5">{tool.desc}</div>
-              </div>
-            </button>
-          ))}
-        </div>
-      </div>
 
       {/* ================= SECTION 2: SANDBOX CREDENTIALS ================= */}
       <div data-tour="credentials">
@@ -170,27 +143,17 @@ export const HomePage: React.FC = () => {
         />
       </div>
 
-      {/* ================= SECTION 3: YOUR PRODUCTS ================= */}
+      {/* ================= SECTION 3: QR API ================= */}
       <div>
         <div className="flex items-center justify-between mb-3">
           <div>
-            <h2 className="text-xs font-bold text-gray-400 uppercase tracking-wider">
-              Your Products
-            </h2>
-            <p className="text-xs text-gray-500 mt-0.5">
-              PayWay products configured in your Sandbox workspace.
-            </p>
+            <h2 className="text-xs font-bold text-gray-400 uppercase tracking-wider">Your integration</h2>
+            <p className="text-xs text-gray-500 mt-0.5">Continue building with your PayWay QR API integration.</p>
           </div>
-          <button
-            onClick={() => setRoute('/integrations')}
-            className="text-xs font-semibold hover:underline cursor-pointer"
-            style={{ color: '#00B4CC' }}
-          >
-            Explore more integrations →
-          </button>
+          <button onClick={() => setRoute('/integrations')} className="text-xs font-semibold hover:underline cursor-pointer" style={{ color: '#00B4CC' }}>Explore integrations →</button>
         </div>
 
-        {!hasIntegration ? (
+        {false ? (
           /* FIRST TIME EMPTY STATE */
           <div className="bg-white rounded-xl border border-gray-100 shadow-2xs p-8 flex flex-col items-center justify-center text-center">
             <div
@@ -380,6 +343,18 @@ export const HomePage: React.FC = () => {
             </p>
           </div>
         )}
+      </div>
+
+      <div data-tour="developer-tools">
+        <div className="mb-3 text-xs font-bold uppercase tracking-wider text-gray-400">Developer Tools</div>
+        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
+          {developerTools.map(tool => (
+            <button key={tool.title} onClick={tool.onClick} className="flex items-center gap-3 rounded-xl border border-gray-100 bg-white p-3.5 text-left shadow-2xs transition-all hover:border-cyan-100 hover:shadow-md">
+              <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg" style={{ backgroundColor: tool.bg }}>{tool.icon}</div>
+              <div><div className="text-xs font-semibold text-gray-800">{tool.title}</div><div className="mt-0.5 text-[11px] text-gray-400">{tool.desc}</div></div>
+            </button>
+          ))}
+        </div>
       </div>
     </div>
   );
