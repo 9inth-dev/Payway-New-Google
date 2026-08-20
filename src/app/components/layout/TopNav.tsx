@@ -22,7 +22,7 @@ export const TopNav: React.FC = () => {
   const { setRoute, setShowAskNaviModal, state, updateState, currentRoute } = useSandbox();
   const [merchantDropdownOpen, setMerchantDropdownOpen] = useState(false);
   const [profileDropdownOpen, setProfileDropdownOpen] = useState(false);
-  const showAskNaviTooltip = currentRoute === '/home' && Boolean(state.hasSeenSandboxWelcome) && !state.hasSeenAskNaviTooltip && !state.firstTimeUser;
+  const showAskNaviTooltip = currentRoute === '/home' && Boolean(state.hasSeenSandboxWelcome) && !state.hasSeenAskNaviTooltip;
 
   const openAskNavi = () => {
     updateState({ hasSeenAskNaviTooltip: true });
