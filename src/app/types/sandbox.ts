@@ -107,6 +107,7 @@ export interface SandboxState {
   hasCopiedApiCredentials?: boolean;
   hasMadeFirstApiCall?: boolean;
   showPostTourGuideHighlight?: boolean;
+  hasSeenAskNaviTooltip?: boolean;
   setupGuideDismissed: boolean;
   hasVisitedIntegrations: boolean;
 
