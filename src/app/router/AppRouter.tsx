@@ -19,6 +19,7 @@ import { IntegrationsPage } from '../pages/IntegrationsPage';
 import { QrApiPage } from '../pages/QrApiPage';
 import { TransactionsPage } from '../pages/TransactionsPage';
 import { DeveloperPage } from '../pages/DeveloperPage';
+import { ApiActivityPage } from '../pages/ApiActivityPage';
 import { HelpPage } from '../pages/HelpPage';
 import { EmptyState } from '../components/common/EmptyState';
 
@@ -90,6 +91,9 @@ export const AppRouter: React.FC = () => {
     }
     if (currentRoute === '/transactions') {
       return <TransactionsPage />;
+    }
+    if (currentRoute === '/developer/activity') {
+      return <ApiActivityPage />;
     }
     if (currentRoute.startsWith('/developer')) {
       return <DeveloperPage />;

@@ -22,6 +22,7 @@ const DEV_NAV: NavItemDef[] = [
   { label: 'API Keys', icon: 'key', route: '/developer/api-keys' },
   { label: 'Developer Settings', icon: 'sliders', route: '/developer/settings' },
   { label: 'API Documentation', icon: 'book', route: '/developer/docs' },
+  { label: 'API Activity', icon: 'activity', route: '/developer/activity' },
 ];
 
 export const Sidebar: React.FC = () => {
@@ -33,6 +34,7 @@ export const Sidebar: React.FC = () => {
     if (targetRoute === '/developer/api-keys') return currentRoute === '/developer/api-keys';
     if (targetRoute === '/developer/settings') return currentRoute === '/developer/settings';
     if (targetRoute === '/developer/docs') return currentRoute === '/developer/docs';
+    if (targetRoute === '/developer/activity') return currentRoute === '/developer/activity';
     return currentRoute === targetRoute;
   };
 
@@ -275,9 +277,15 @@ function NavIcon({ name, active }: { name: string; active: boolean }) {
         <line x1="17" y1="16" x2="23" y2="16" />
       </svg>
     );
+  if (name === 'activity')
+  return (
+  <svg {...p}>
+  <polyline points="3 12 7 12 10 5 14 19 17 12 21 12" />
+  </svg>
+  );
   if (name === 'book')
-    return (
-      <svg {...p}>
+  return (
+  <svg {...p}>
         <path d="M4 19.5A2.5 2.5 0 016.5 17H20" />
         <path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z" />
       </svg>
