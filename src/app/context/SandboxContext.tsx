@@ -397,6 +397,7 @@ interface SandboxContextType {
   showCreateTxModal: boolean;
   showAskNaviModal: boolean;
   askNaviInitialQuery: string | null;
+  askNaviContext: 'general' | 'product_recommendation';
   welcomeModalOpen: boolean;
   tourStep: number | null;
   devSidebarOpen: boolean;
@@ -426,6 +427,7 @@ interface SandboxContextType {
   setShowFeedbackModal: (show: boolean) => void;
   setShowPrototypeModal: (show: boolean) => void;
   openAskNaviWithQuery: (query: string) => void;
+  openProductRecommendation: () => void;
   setWelcomeModalOpen: (show: boolean) => void;
   setTourStep: (step: number | null | ((prev: number | null) => number | null)) => void;
   setDevSidebarOpen: (open: boolean | ((prev: boolean) => boolean)) => void;
@@ -501,6 +503,7 @@ export const SandboxProvider: React.FC<{ children: React.ReactNode }> = ({ child
 
   const [selectedActivityLogId, setSelectedActivityLogId] = useState<string | null>(null);
   const [askNaviInitialQuery, setAskNaviInitialQuery] = useState<string | null>(null);
+  const [askNaviContext, setAskNaviContext] = useState<'general' | 'product_recommendation'>('general');
 
   const [toasts, setToasts] = useState<ToastMessage[]>([]);
   
@@ -618,7 +621,14 @@ export const SandboxProvider: React.FC<{ children: React.ReactNode }> = ({ child
   };
 
   const openAskNaviWithQuery = (queryText: string) => {
+    setAskNaviContext('general');
     setAskNaviInitialQuery(queryText);
+    setShowAskNaviModal(true);
+  };
+
+  const openProductRecommendation = () => {
+    setAskNaviContext('product_recommendation');
+    setAskNaviInitialQuery(null);
     setShowAskNaviModal(true);
   };
 
@@ -943,6 +953,7 @@ export const SandboxProvider: React.FC<{ children: React.ReactNode }> = ({ child
     showCreateTxModal,
     showAskNaviModal,
     askNaviInitialQuery,
+    askNaviContext,
     welcomeModalOpen,
     tourStep,
     devSidebarOpen,
@@ -970,6 +981,7 @@ export const SandboxProvider: React.FC<{ children: React.ReactNode }> = ({ child
     setShowFeedbackModal,
     setShowPrototypeModal,
     openAskNaviWithQuery,
+    openProductRecommendation,
     setWelcomeModalOpen,
     setTourStep,
     setDevSidebarOpen,
@@ -988,6 +1000,7 @@ export const SandboxProvider: React.FC<{ children: React.ReactNode }> = ({ child
     showCreateTxModal,
     showAskNaviModal,
     askNaviInitialQuery,
+    askNaviContext,
     welcomeModalOpen,
     tourStep,
     devSidebarOpen,
@@ -1011,6 +1024,7 @@ export const SandboxProvider: React.FC<{ children: React.ReactNode }> = ({ child
     addToast,
     removeToast,
     openAskNaviWithQuery,
+    openProductRecommendation,
     resetToDefaults,
     requestSandboxExtension,
     approveSandboxExtension,

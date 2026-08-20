@@ -8,7 +8,7 @@ interface PrototypeControlsModalProps {
 }
 
 export const PrototypeControlsModal: React.FC<PrototypeControlsModalProps> = ({ isOpen, onClose }) => {
-  const { updateState, updateTestingState, addToast, setRoute, setApiLogs, setTransactions } = useSandbox();
+  const { updateState, updateTestingState, addToast, setRoute, setApiLogs, setTransactions, resetToDefaults, setTourStep } = useSandbox();
 
   if (!isOpen) return null;
 
