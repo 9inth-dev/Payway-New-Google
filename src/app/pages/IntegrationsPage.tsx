@@ -7,7 +7,7 @@ import { getVerifiedRequirementsCount, isReadyForProduction } from '../utils/rea
 import { QrCode, ArrowRight, ShieldCheck, CheckCircle2 } from 'lucide-react';
 
 export const IntegrationsPage: React.FC = () => {
-  const { state, updateState, setRoute, setShowFeedbackModal } = useSandbox();
+  const { state, updateState, setRoute, setShowFeedbackModal, openProductRecommendation } = useSandbox();
 
   const hasStartedIntegration =
     !!state.hasCreatedFirstIntegration ||
@@ -89,11 +89,30 @@ export const IntegrationsPage: React.FC = () => {
     <div className="flex flex-col gap-6 w-full max-w-4xl">
       {/* Page Header */}
       <PageHeader
-        title="Payment Integrations"
-        description="Build, test, and manage your PayWay QR API integration."
+        title="What are you building today?"
+        description="Choose a PayWay product to start accepting payments, or let Navi help you find the right fit."
+        action={
+          <div className="flex flex-wrap items-center gap-2">
+            <button
+              type="button"
+              onClick={() => document.getElementById('available-products')?.scrollIntoView({ behavior: 'smooth', block: 'start' })}
+              className="rounded-lg border border-gray-200 bg-white px-3 py-2 text-xs font-semibold text-gray-700 transition-colors hover:border-cyan-200 hover:text-[#00B4CC]"
+            >
+              Explore products
+            </button>
+            <button
+              type="button"
+              onClick={openProductRecommendation}
+              className="rounded-lg bg-[#00B4CC] px-3 py-2 text-xs font-semibold text-white transition-colors hover:bg-[#009cb2]"
+            >
+              Help me choose
+            </button>
+          </div>
+        }
       />
 
       {/* Primary QR API Integration Card */}
+      <div id="available-products">
       <Card className="hover:border-cyan-300 transition-all shadow-2xs border-gray-200">
         <CardHeader
           action={
@@ -174,6 +193,7 @@ export const IntegrationsPage: React.FC = () => {
           </button>
         </CardContent>
       </Card>
+      </div>
     </div>
   );
 };

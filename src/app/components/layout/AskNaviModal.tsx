@@ -40,6 +40,7 @@ export const AskNaviModal: React.FC = () => {
     showAskNaviModal,
     setShowAskNaviModal,
     askNaviInitialQuery,
+    askNaviContext,
     setRoute,
     addToast,
     state,
@@ -51,6 +52,7 @@ export const AskNaviModal: React.FC = () => {
   const [isRecordingVoice, setIsRecordingVoice] = useState(false);
   const [copiedId, setCopiedId] = useState<string | null>(null);
   const [showUsagePolicy, setShowUsagePolicy] = useState(false);
+  const [recommendationAnswers, setRecommendationAnswers] = useState<Record<string, string>>({});
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -123,6 +125,20 @@ searchInput.addEventListener('input', debounce((e) => {
   }, [showAskNaviModal, setShowAskNaviModal]);
 
   if (!showAskNaviModal) return null;
+
+  if (askNaviContext === 'product_recommendation') {
+    const recommendationReady = Object.keys(recommendationAnswers).length >= 2;
+    const choose = (key: string, value: string) => setRecommendationAnswers(prev => ({ ...prev, [key]: value }));
+    return (
+      <div className="fixed inset-0 z-50 flex justify-end bg-slate-900/35" role="dialog" aria-modal="true" aria-labelledby="navi-recommendation-title">
+        <div className="flex h-full w-full max-w-md flex-col bg-white shadow-2xl">
+          <div className="flex items-center justify-between border-b border-gray-100 px-6 py-5"><div><p className="text-xs font-bold uppercase tracking-wider text-[#00B4CC]">Ask Navi</p><h2 id="navi-recommendation-title" className="mt-1 text-lg font-bold text-gray-900">Find the right product</h2></div><button type="button" onClick={() => setShowAskNaviModal(false)} className="rounded-lg p-2 text-gray-400 hover:bg-gray-50" aria-label="Close Ask Navi"><X className="h-5 w-5" /></button></div>
+          <div className="flex-1 space-y-6 overflow-y-auto px-6 py-6"><p className="text-sm leading-relaxed text-gray-600">Answer two quick questions and I&apos;ll point you to the best PayWay starting point.</p><div><p className="mb-3 text-sm font-semibold text-gray-900">What are you trying to accept?</p><div className="grid gap-2">{['Online payments', 'QR payments', 'Invoices or payment links'].map(option => <button type="button" key={option} onClick={() => choose('paymentType', option)} className={`rounded-xl border px-4 py-3 text-left text-sm transition-colors ${recommendationAnswers.paymentType === option ? 'border-[#00B4CC] bg-cyan-50 text-[#0D3D4F]' : 'border-gray-200 text-gray-600 hover:border-cyan-200'}`}>{option}</button>)}</div></div><div><p className="mb-3 text-sm font-semibold text-gray-900">How are you building?</p><div className="grid gap-2">{['Custom website or app', 'Website builder', 'Not sure yet'].map(option => <button type="button" key={option} onClick={() => choose('buildType', option)} className={`rounded-xl border px-4 py-3 text-left text-sm transition-colors ${recommendationAnswers.buildType === option ? 'border-[#00B4CC] bg-cyan-50 text-[#0D3D4F]' : 'border-gray-200 text-gray-600 hover:border-cyan-200'}`}>{option}</button>)}</div></div>{recommendationReady && <div className="rounded-xl border border-cyan-100 bg-cyan-50/60 p-4"><p className="text-xs font-bold uppercase tracking-wider text-[#00B4CC]">Recommended for you</p><p className="mt-2 text-base font-bold text-[#0D3D4F]">QR API</p><p className="mt-1 text-sm leading-relaxed text-gray-600">Start in Sandbox with dynamic KHQR payments, webhooks, and a guided testing workflow.</p></div>}</div>
+          <div className="border-t border-gray-100 px-6 py-5"><button type="button" disabled={!recommendationReady} onClick={() => { setRoute('/integrations/qr-api'); setShowAskNaviModal(false); }} className="w-full rounded-lg bg-[#00B4CC] px-4 py-3 text-sm font-semibold text-white transition-colors hover:bg-[#009cb2] disabled:cursor-not-allowed disabled:bg-gray-200 disabled:text-gray-400">Continue with QR API →</button></div>
+        </div>
+      </div>
+    );
+  }
 
   // Copy code helper
   const handleCopyCode = (code: string, id: string) => {
