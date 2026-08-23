@@ -112,7 +112,7 @@ export const IntegrationsPage: React.FC = () => {
       />
 
       {/* Primary QR API Integration Card */}
-      <div id="available-products">
+      <div id="available-products" className="grid grid-cols-1 md:grid-cols-2 gap-6">
       <Card className="hover:border-cyan-300 transition-all shadow-2xs border-gray-200">
         <CardHeader
           action={
