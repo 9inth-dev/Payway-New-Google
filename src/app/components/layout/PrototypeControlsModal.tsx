@@ -52,8 +52,6 @@ export const PrototypeControlsModal: React.FC<PrototypeControlsModalProps> = ({ 
           hasCompletedFirstTestPayment: false,
           hasCopiedApiCredentials: false,
           hasMadeFirstApiCall: false,
-          showPostTourGuideHighlight: false,
-          setupGuideDismissed: false,
           hasVisitedIntegrations: false,
           qrIntegrationStatus: 'not_started',
           productionAccessStatus: 'sandbox',

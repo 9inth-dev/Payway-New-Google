@@ -7,8 +7,6 @@ import { AskNaviModal } from '../components/layout/AskNaviModal';
 import { CreateTransactionModal } from '../components/layout/CreateTransactionModal';
 import { ReviewFeedbackModal } from '../components/qr/ReviewFeedbackModal';
 import { PrototypeControlsModal } from '../components/layout/PrototypeControlsModal';
-import { GuidedTourOverlay } from '../components/layout/GuidedTourOverlay';
-import { FloatingSetupGuide } from '../components/layout/FloatingSetupGuide';
 import { ToastContainer } from '../components/common/Toast';
 
 import { LoginPage } from '../pages/LoginPage';
@@ -30,7 +28,7 @@ const TOUR_STEPS = [
     desc: 'Your sandbox Public and Secret API keys live here. Copy them to authenticate every API request.',
   },
   {
-    title: 'Integrations & KHQR API',
+    title: 'Products & KHQR API',
     desc: 'Explore payment APIs including KHQR code generation, Card processing, and Hosted Checkout.',
   },
   {
@@ -83,7 +81,7 @@ export const AppRouter: React.FC = () => {
     ) {
       return <HomePage />;
     }
-    if (currentRoute === '/integrations') {
+    if (currentRoute === '/products' || currentRoute === '/integrations') {
       return <IntegrationsPage />;
     }
     if (currentRoute.startsWith('/integrations/qr-api')) {
@@ -137,14 +135,9 @@ export const AppRouter: React.FC = () => {
       <PrototypeControlsModal isOpen={showPrototypeModal} onClose={() => setShowPrototypeModal(false)} />
       <ToastContainer />
 
-      {/* Floating Setup Guide */}
-      <FloatingSetupGuide />
-
       {/* Welcome Screen Overlay on top of Dashboard */}
       {isWelcomeOverlayOpen && <SandboxWelcomeModal />}
 
-      {/* Guided Tour Overlay */}
-      <GuidedTourOverlay />
     </div>
   );
 };

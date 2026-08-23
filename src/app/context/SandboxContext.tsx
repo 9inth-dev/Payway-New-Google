@@ -26,8 +26,6 @@ const DEFAULT_SANDBOX_STATE: SandboxState = {
   hasCompletedFirstTestPayment: false,
   hasCopiedApiCredentials: false,
   hasMadeFirstApiCall: false,
-  showPostTourGuideHighlight: false,
-  setupGuideDismissed: false,
   hasVisitedIntegrations: false,
   testingState: DEFAULT_TESTING_STATE,
   uiEvidence: {
@@ -516,6 +514,24 @@ export const SandboxProvider: React.FC<{ children: React.ReactNode }> = ({ child
   // changes - including via history.pushState, since that still mutates
   // location.hash. Avoiding the URL hash entirely sidesteps the issue.
   const getInitialRoute = () => {
+    const browserPath = window.location.pathname;
+    const supportedPath = browserPath === '/' ? '/home' : browserPath;
+    const knownRoute =
+      supportedPath === '/home' ||
+      supportedPath === '/products' ||
+      supportedPath === '/integrations' ||
+      supportedPath.startsWith('/integrations/qr-api') ||
+      supportedPath === '/transactions' ||
+      supportedPath === '/developer/activity' ||
+      supportedPath.startsWith('/developer') ||
+      supportedPath === '/help' ||
+      supportedPath === '/login' ||
+      supportedPath === '/account-created' ||
+      supportedPath === '/welcome' ||
+      supportedPath === '/sandbox-welcome';
+
+    if (knownRoute) return supportedPath;
+
     try {
       const saved = sessionStorage.getItem('payway_sandbox_route');
       if (saved) return saved;

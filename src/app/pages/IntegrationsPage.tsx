@@ -4,7 +4,7 @@ import { PageHeader } from '../components/common/PageHeader';
 import { StatusBadge, StatusVariant } from '../components/common/StatusBadge';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '../components/common/Card';
 import { getVerifiedRequirementsCount, isReadyForProduction } from '../utils/readiness';
-import { QrCode, ArrowRight, ShieldCheck, CheckCircle2 } from 'lucide-react';
+import { QrCode, ArrowRight, ShieldCheck, CheckCircle2, ShoppingBag } from 'lucide-react';
 
 export const IntegrationsPage: React.FC = () => {
   const { state, updateState, setRoute, setShowFeedbackModal, openProductRecommendation } = useSandbox();
@@ -86,33 +86,35 @@ export const IntegrationsPage: React.FC = () => {
   const verifiedCount = getVerifiedRequirementsCount(state);
 
   return (
-    <div className="flex flex-col gap-6 w-full max-w-4xl">
+    <div className="flex flex-col gap-6 w-full">
       {/* Page Header */}
-      <PageHeader
-        title="What are you building today?"
-        description="Choose a PayWay product to start accepting payments, or let Navi help you find the right fit."
-        action={
-          <div className="flex flex-wrap items-center gap-2">
-            <button
-              type="button"
-              onClick={() => document.getElementById('available-products')?.scrollIntoView({ behavior: 'smooth', block: 'start' })}
-              className="rounded-lg border border-gray-200 bg-white px-3 py-2 text-xs font-semibold text-gray-700 transition-colors hover:border-cyan-200 hover:text-[#00B4CC]"
-            >
-              Explore products
-            </button>
-            <button
-              type="button"
-              onClick={openProductRecommendation}
-              className="rounded-lg bg-[#00B4CC] px-3 py-2 text-xs font-semibold text-white transition-colors hover:bg-[#009cb2]"
-            >
-              Help me choose
-            </button>
-          </div>
-        }
-      />
+      <div className="max-w-4xl">
+        <PageHeader
+          title="What are you building today?"
+          description="Choose a PayWay product to start accepting payments, or let Navi help you find the right fit."
+          action={
+            <div className="flex flex-wrap items-center gap-2">
+              <button
+                type="button"
+                onClick={() => document.getElementById('available-products')?.scrollIntoView({ behavior: 'smooth', block: 'start' })}
+                className="rounded-lg border border-gray-200 bg-white px-3 py-2 text-xs font-semibold text-gray-700 transition-colors hover:border-cyan-200 hover:text-[#00B4CC]"
+              >
+                Explore products
+              </button>
+              <button
+                type="button"
+                onClick={openProductRecommendation}
+                className="rounded-lg bg-[#00B4CC] px-3 py-2 text-xs font-semibold text-white transition-colors hover:bg-[#009cb2]"
+              >
+                Help me choose
+              </button>
+            </div>
+          }
+        />
+      </div>
 
       {/* Primary QR API Integration Card */}
-      <div id="available-products">
+      <div id="available-products" className="grid w-full grid-cols-1 md:grid-cols-2 gap-6">
       <Card className="hover:border-cyan-300 transition-all shadow-2xs border-gray-200">
         <CardHeader
           action={
@@ -190,6 +192,34 @@ export const IntegrationsPage: React.FC = () => {
           >
             <span>{ctaLabel}</span>
             <ArrowRight className="w-3.5 h-3.5" />
+          </button>
+        </CardContent>
+      </Card>
+
+      <Card className="border-gray-200 opacity-75" aria-label="eCommerce Checkout coming soon">
+        <CardHeader
+          action={<span className="rounded-md border border-gray-200 bg-gray-100 px-2.5 py-0.5 text-[10px] font-bold text-gray-500">Coming soon</span>}
+        >
+          <CardTitle
+            icon={<div className="flex h-10 w-10 items-center justify-center rounded-xl border border-gray-200 bg-gray-100 text-gray-500"><ShoppingBag className="h-5 w-5" /></div>}
+          >
+            eCommerce Checkout
+          </CardTitle>
+          <CardDescription className="mt-1 max-w-2xl text-sm leading-relaxed text-gray-500">
+            A hosted checkout experience for accepting online payments across your storefront and digital products.
+          </CardDescription>
+        </CardHeader>
+        <div className="flex flex-col gap-4 border-y border-gray-100 bg-gray-50/70 px-6 py-4 sm:flex-row sm:items-center sm:justify-between">
+          <div className="flex flex-wrap items-center gap-4 text-xs text-gray-500">
+            <span className="flex items-center gap-1.5 font-medium"><CheckCircle2 className="h-4 w-4 text-gray-400" />Hosted checkout</span>
+            <span className="flex items-center gap-1.5 font-medium"><ShieldCheck className="h-4 w-4 text-gray-400" />Secure payment flow</span>
+          </div>
+          <span className="text-xs font-semibold text-gray-500">Not currently available</span>
+        </div>
+        <CardContent className="flex flex-col gap-3 pt-5 sm:flex-row sm:items-center sm:justify-between">
+          <div className="text-xs text-gray-500">We&apos;ll let you know when eCommerce Checkout is ready to use.</div>
+          <button type="button" disabled aria-disabled="true" className="flex cursor-not-allowed items-center justify-center gap-2 self-start rounded-lg bg-gray-200 px-4 py-2 text-xs font-semibold text-gray-500 sm:self-auto">
+            <span>Coming soon</span>
           </button>
         </CardContent>
       </Card>

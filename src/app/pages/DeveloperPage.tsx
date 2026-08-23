@@ -263,10 +263,10 @@ export const DeveloperPage: React.FC = () => {
                 ) : (
                   <button
                     type="button"
-                    onClick={() => setRoute('/integrations')}
+                    onClick={() => setRoute('/products')}
                     className="inline-flex items-center gap-1.5 text-xs font-bold text-[#00B4CC] hover:text-[#009cb2] transition-colors cursor-pointer"
                   >
-                    <span>Explore integrations</span>
+                    <span>Explore products</span>
                     <ArrowRight className="w-3.5 h-3.5" />
                   </button>
                 )}
