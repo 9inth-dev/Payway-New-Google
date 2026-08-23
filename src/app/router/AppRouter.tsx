@@ -28,7 +28,7 @@ const TOUR_STEPS = [
     desc: 'Your sandbox Public and Secret API keys live here. Copy them to authenticate every API request.',
   },
   {
-    title: 'Integrations & KHQR API',
+    title: 'Products & KHQR API',
     desc: 'Explore payment APIs including KHQR code generation, Card processing, and Hosted Checkout.',
   },
   {
@@ -81,7 +81,7 @@ export const AppRouter: React.FC = () => {
     ) {
       return <HomePage />;
     }
-    if (currentRoute === '/integrations') {
+    if (currentRoute === '/products' || currentRoute === '/integrations') {
       return <IntegrationsPage />;
     }
     if (currentRoute.startsWith('/integrations/qr-api')) {

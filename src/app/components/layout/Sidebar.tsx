@@ -10,7 +10,7 @@ interface NavItemDef {
 
 const PRIMARY_NAV: NavItemDef[] = [
   { label: 'Home', icon: 'home', route: '/home' },
-  { label: 'Integrations', icon: 'layers', route: '/integrations', badge: 'New' },
+  { label: 'Products', icon: 'layers', route: '/products', badge: 'New' },
   { label: 'Transactions', icon: 'swap', route: '/transactions' },
   { label: 'Invoices', icon: 'file', route: '/invoices' },
   { label: 'Customers', icon: 'user', route: '/customers' },
@@ -30,7 +30,7 @@ export const Sidebar: React.FC = () => {
 
   const isRouteActive = (targetRoute: string) => {
     if (targetRoute === '/home') return currentRoute === '/home' || currentRoute === '/';
-    if (targetRoute === '/integrations') return currentRoute.startsWith('/integrations');
+    if (targetRoute === '/products') return currentRoute === '/products' || currentRoute === '/integrations' || currentRoute.startsWith('/integrations/');
     if (targetRoute === '/developer/api-keys') return currentRoute === '/developer/api-keys';
     if (targetRoute === '/developer/settings') return currentRoute === '/developer/settings';
     if (targetRoute === '/developer/docs') return currentRoute === '/developer/docs';
@@ -48,7 +48,7 @@ export const Sidebar: React.FC = () => {
             icon={item.icon}
             active={isRouteActive(item.route)}
             badge={item.badge}
-            dataTour={item.route === '/integrations' ? 'sidebar-integrations' : undefined}
+            dataTour={item.route === '/products' ? 'sidebar-products' : undefined}
             onClick={() => setRoute(item.route)}
           />
         ))}

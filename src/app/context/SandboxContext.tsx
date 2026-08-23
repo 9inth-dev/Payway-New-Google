@@ -518,6 +518,7 @@ export const SandboxProvider: React.FC<{ children: React.ReactNode }> = ({ child
     const supportedPath = browserPath === '/' ? '/home' : browserPath;
     const knownRoute =
       supportedPath === '/home' ||
+      supportedPath === '/products' ||
       supportedPath === '/integrations' ||
       supportedPath.startsWith('/integrations/qr-api') ||
       supportedPath === '/transactions' ||

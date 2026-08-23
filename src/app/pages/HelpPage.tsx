@@ -18,7 +18,7 @@ export const HelpPage: React.FC = () => {
     },
     {
       q: 'How do I test KHQR payments on mobile devices?',
-      a: 'Go to Integrations > KHQR API > Interactive QR Testing tab. Generate a QR code string and click "Simulate Customer Scan & Payment".',
+      a: 'Go to Products > QR API > Interactive QR Testing tab. Generate a QR code string and click "Simulate Customer Scan & Payment".',
     },
     {
       q: 'What should I do when ready for Production?',

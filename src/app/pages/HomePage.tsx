@@ -127,7 +127,7 @@ export const HomePage: React.FC = () => {
             </div>
             <div className="grid gap-3 md:grid-cols-2">
               {[
-                ['1', 'Create your first integration', 'Choose a PayWay product and create your Sandbox integration.', '/integrations'],
+                ['1', 'Create your first integration', 'Choose a PayWay product and create your Sandbox integration.', '/products'],
                 ['2', 'Make your first API call', 'Send a successful request to a PayWay Sandbox endpoint.', '/developer/docs'],
                 ['3', 'Make your first test payment', 'Run a payment through the Sandbox simulator.', '/transactions'],
                 ['4', 'Request Production Access', 'Complete testing and submit your integration for review.', '/integrations/qr-api/production'],
@@ -139,7 +139,7 @@ export const HomePage: React.FC = () => {
                 </button>
               ))}
             </div>
-            <div className="flex justify-end border-t border-gray-100 pt-5"><button type="button" onClick={() => setRoute('/integrations')} className="rounded-lg bg-[#00B4CC] px-5 py-2.5 text-sm font-semibold text-white hover:bg-[#009cb2]">Start setup →</button></div>
+            <div className="flex justify-end border-t border-gray-100 pt-5"><button type="button" onClick={() => setRoute('/products')} className="rounded-lg bg-[#00B4CC] px-5 py-2.5 text-sm font-semibold text-white hover:bg-[#009cb2]">Start setup →</button></div>
           </div>
         </section>
         <div data-tour="credentials"><div className="mb-3 text-xs font-bold uppercase tracking-wider text-gray-400">Sandbox Credentials</div><CredentialCard title="Sandbox Credentials" description="Use these test keys to authenticate your Sandbox API requests." showMerchantId={true} /></div>
@@ -183,7 +183,7 @@ export const HomePage: React.FC = () => {
             <h2 className="text-xs font-bold text-gray-400 uppercase tracking-wider">Your integration</h2>
             <p className="text-xs text-gray-500 mt-0.5">Continue building with your PayWay QR API integration.</p>
           </div>
-          <button onClick={() => setRoute('/integrations')} className="text-xs font-semibold hover:underline cursor-pointer" style={{ color: '#00B4CC' }}>Explore integrations →</button>
+          <button onClick={() => setRoute('/products')} className="text-xs font-semibold hover:underline cursor-pointer" style={{ color: '#00B4CC' }}>Explore products →</button>
         </div>
 
         {false ? (
@@ -207,7 +207,7 @@ export const HomePage: React.FC = () => {
             </p>
             <div className="flex flex-col sm:flex-row items-center gap-3">
               <button
-                onClick={() => setRoute('/integrations')}
+                onClick={() => setRoute('/products')}
                 className="px-5 py-2.5 rounded-lg text-xs font-semibold text-white shadow-sm transition-colors cursor-pointer"
                 style={{ backgroundColor: '#00B4CC' }}
                 onMouseEnter={e => ((e.currentTarget as HTMLElement).style.backgroundColor = '#0A9BB0')}
@@ -216,10 +216,10 @@ export const HomePage: React.FC = () => {
                 Start a product integration
               </button>
               <button
-                onClick={() => setRoute('/integrations')}
+                onClick={() => setRoute('/products')}
                 className="text-xs font-semibold text-gray-500 hover:text-gray-800 cursor-pointer px-3 py-2"
               >
-                Explore integrations
+                Explore products
               </button>
             </div>
           </div>
