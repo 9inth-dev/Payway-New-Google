@@ -62,6 +62,27 @@ export const QrApiPage: React.FC = () => {
 
   const sampleRequestCode = getSampleCode(selectedCodeLang);
   const [copiedCode, setCopiedCode] = useState(false);
+  const [copiedAiContext, setCopiedAiContext] = useState(false);
+
+  const aiIntegrationContext = `PayWay QR API integration context\n\nProduct: ABA PayWay QR API (KHQR)\nPurpose: Generate dynamic KHQR payment QR codes for customers to scan with supported banking apps.\nEndpoint: POST /api/v1/purchase/create_qr\nAuthentication: Use the merchant's server-side Sandbox credentials from the PayWay dashboard. Never expose credentials in client-side code.\nRequirements: Include the lifetime parameter, support transaction status fallback checks, and handle QR expiration and callback responses.\nReference: ${QR_API_DOCUMENTATION_URL}\n\nHelp the developer implement this integration safely using the official documentation and the language-specific examples in the PayWay dashboard.`;
+
+  const handleCopyAiContext = () => {
+    if (navigator.clipboard) navigator.clipboard.writeText(aiIntegrationContext);
+    setCopiedAiContext(true);
+    addToast('AI context copied', 'Safe QR API integration context copied without credentials.', 'success');
+    setTimeout(() => setCopiedAiContext(false), 2000);
+  };
+
+  const handleDownloadAiContext = () => {
+    const blob = new Blob([aiIntegrationContext], { type: 'text/plain;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const anchor = document.createElement('a');
+    anchor.href = url;
+    anchor.download = 'payway-qr-api-ai-context.txt';
+    anchor.click();
+    URL.revokeObjectURL(url);
+    addToast('AI context downloaded', 'The safe QR API context is ready to share with your coding assistant.', 'success');
+  };
 
   const handleCopyCode = () => {
     if (navigator.clipboard) {
@@ -261,9 +282,21 @@ export const QrApiPage: React.FC = () => {
               Start Building
             </div>
 
-            <div className="bg-white rounded-lg border border-gray-100 shadow-sm p-5 flex flex-col gap-4">
+            <div className="bg-white rounded-lg border border-gray-100 shadow-sm p-5 flex flex-col gap-5">
               <div>
-                <h3 className="text-sm font-semibold text-gray-800">Generate KHQR Payments</h3>
+                <h3 className="text-sm font-semibold text-gray-800">Choose how you want to build</h3>
+                <p className="text-xs text-gray-500 mt-1 leading-relaxed">Use PayWay&apos;s documentation and examples, or give safe integration context to your AI coding assistant for a faster start.</p>
+              </div>
+
+              <div className="rounded-xl border border-gray-100 bg-gray-50/60 p-4">
+                <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+                  <div>
+                    <p className="text-[11px] font-bold uppercase tracking-wider text-[#00B4CC]">Build with Code</p>
+                    <h3 className="mt-1 text-sm font-semibold text-gray-800">Generate KHQR Payments</h3>
+                    <p className="mt-1 max-w-3xl text-xs leading-relaxed text-gray-500">Prefer to build it yourself? Explore the API, documentation, and code examples to start integrating.</p>
+                  </div>
+                  <button type="button" onClick={() => document.getElementById('sample-code-block')?.scrollIntoView({ behavior: 'smooth', block: 'center' })} className="shrink-0 rounded-lg bg-[#00B4CC] px-3.5 py-2 text-xs font-semibold text-white hover:bg-[#009cb2]">Start building →</button>
+                </div>
                 <p className="text-xs text-gray-500 mt-1 leading-relaxed max-w-3xl">
                   Call the PayWay QR endpoint to generate standardized NBC KHQR dynamic QR codes. Once generated, display the QR string or image to the customer to scan with ABA Mobile or any KHQR compatible banking app.
                 </p>
@@ -332,6 +365,23 @@ export const QrApiPage: React.FC = () => {
                 <pre className="text-[11px] leading-relaxed text-gray-200">{sampleRequestCode}</pre>
               </div>
 
+              <div className="flex items-center gap-3 py-1" aria-hidden="true"><div className="h-px flex-1 bg-gray-100" /><span className="text-[11px] font-semibold uppercase tracking-wider text-gray-400">or</span><div className="h-px flex-1 bg-gray-100" /></div>
+
+              <div className="rounded-xl border border-indigo-100 bg-indigo-50/50 p-4">
+                <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+                  <div>
+                    <p className="text-[11px] font-bold uppercase tracking-wider text-indigo-600">Build with AI</p>
+                    <h3 className="mt-1 text-sm font-semibold text-gray-800">Let your coding assistant help</h3>
+                    <p className="mt-1 max-w-3xl text-xs leading-relaxed text-gray-600">Use safe QR API context with Claude, Cursor, ChatGPT, or another assistant to get implementation guidance faster.</p>
+                  </div>
+                  <span className="shrink-0 rounded-full bg-white px-2.5 py-1 text-[10px] font-semibold text-indigo-600 shadow-2xs">Faster assisted path</span>
+                </div>
+                <div className="mt-4 flex flex-wrap items-center gap-2">
+                  <button type="button" onClick={handleCopyAiContext} className="inline-flex items-center gap-1.5 rounded-lg bg-indigo-600 px-3 py-1.5 text-xs font-semibold text-white hover:bg-indigo-700"><Copy className="h-3.5 w-3.5" />{copiedAiContext ? 'Copied!' : 'Copy AI prompt'}</button>
+                  <button type="button" onClick={handleDownloadAiContext} className="rounded-lg border border-indigo-200 bg-white px-3 py-1.5 text-xs font-semibold text-indigo-700 hover:bg-indigo-50">Download integration context</button>
+                  <span className="text-[11px] text-gray-500">No credentials included</span>
+                </div>
+              </div>
 
             </div>
           </div>
