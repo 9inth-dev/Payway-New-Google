@@ -97,35 +97,6 @@ export const HelpPage: React.FC = () => {
         ))}
       </div>
 
-      {/* Onboarding & Guided Tour Card */}
-      <Card className="bg-gradient-to-r from-cyan-50/60 via-white to-teal-50/40 border-cyan-100">
-        <CardHeader>
-          <CardTitle>Sandbox Onboarding &amp; Guided Tour</CardTitle>
-          <CardDescription>Revisit the first-time tour or un-dismiss your floating Setup Guide</CardDescription>
-        </CardHeader>
-        <CardContent className="flex flex-col sm:flex-row gap-3">
-          <button
-            onClick={() => {
-              setRoute('/home');
-              setTourStep(1);
-              addToast('Guided Tour Started', 'Launching Developer Home tour', 'info');
-            }}
-            className="px-4 py-2 bg-[#00B4CC] hover:bg-[#0A9BB0] text-white text-xs font-semibold rounded-lg shadow-2xs transition-colors cursor-pointer"
-          >
-            Restart Guided Tour →
-          </button>
-          <button
-            onClick={() => {
-              updateState({ setupGuideDismissed: false });
-              addToast('Setup Guide Restored', 'Floating Setup Guide is now visible in the bottom right', 'success');
-            }}
-            className="px-4 py-2 bg-white hover:bg-gray-50 border border-gray-200 text-gray-700 text-xs font-semibold rounded-lg shadow-2xs transition-colors cursor-pointer"
-          >
-            Re-open Floating Setup Guide
-          </button>
-        </CardContent>
-      </Card>
-
       {/* Contact & Support Channels */}
       <Card>
         <CardHeader>

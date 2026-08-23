@@ -106,9 +106,7 @@ export interface SandboxState {
   hasCompletedFirstTestPayment: boolean;
   hasCopiedApiCredentials?: boolean;
   hasMadeFirstApiCall?: boolean;
-  showPostTourGuideHighlight?: boolean;
   hasSeenAskNaviTooltip?: boolean;
-  setupGuideDismissed: boolean;
   hasVisitedIntegrations: boolean;
 
   testingState?: QrTestingState;

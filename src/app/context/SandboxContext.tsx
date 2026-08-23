@@ -26,8 +26,6 @@ const DEFAULT_SANDBOX_STATE: SandboxState = {
   hasCompletedFirstTestPayment: false,
   hasCopiedApiCredentials: false,
   hasMadeFirstApiCall: false,
-  showPostTourGuideHighlight: false,
-  setupGuideDismissed: false,
   hasVisitedIntegrations: false,
   testingState: DEFAULT_TESTING_STATE,
   uiEvidence: {

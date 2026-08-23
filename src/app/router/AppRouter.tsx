@@ -7,7 +7,6 @@ import { AskNaviModal } from '../components/layout/AskNaviModal';
 import { CreateTransactionModal } from '../components/layout/CreateTransactionModal';
 import { ReviewFeedbackModal } from '../components/qr/ReviewFeedbackModal';
 import { PrototypeControlsModal } from '../components/layout/PrototypeControlsModal';
-import { GuidedTourOverlay } from '../components/layout/GuidedTourOverlay';
 import { ToastContainer } from '../components/common/Toast';
 
 import { LoginPage } from '../pages/LoginPage';
@@ -139,8 +138,6 @@ export const AppRouter: React.FC = () => {
       {/* Welcome Screen Overlay on top of Dashboard */}
       {isWelcomeOverlayOpen && <SandboxWelcomeModal />}
 
-      {/* Guided Tour Overlay */}
-      <GuidedTourOverlay />
     </div>
   );
 };
