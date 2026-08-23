@@ -86,30 +86,32 @@ export const IntegrationsPage: React.FC = () => {
   const verifiedCount = getVerifiedRequirementsCount(state);
 
   return (
-    <div className="flex flex-col gap-6 w-full max-w-4xl">
+    <div className="flex flex-col gap-6 w-full">
       {/* Page Header */}
-      <PageHeader
-        title="What are you building today?"
-        description="Choose a PayWay product to start accepting payments, or let Navi help you find the right fit."
-        action={
-          <div className="flex flex-wrap items-center gap-2">
-            <button
-              type="button"
-              onClick={() => document.getElementById('available-products')?.scrollIntoView({ behavior: 'smooth', block: 'start' })}
-              className="rounded-lg border border-gray-200 bg-white px-3 py-2 text-xs font-semibold text-gray-700 transition-colors hover:border-cyan-200 hover:text-[#00B4CC]"
-            >
-              Explore products
-            </button>
-            <button
-              type="button"
-              onClick={openProductRecommendation}
-              className="rounded-lg bg-[#00B4CC] px-3 py-2 text-xs font-semibold text-white transition-colors hover:bg-[#009cb2]"
-            >
-              Help me choose
-            </button>
-          </div>
-        }
-      />
+      <div className="max-w-4xl">
+        <PageHeader
+          title="What are you building today?"
+          description="Choose a PayWay product to start accepting payments, or let Navi help you find the right fit."
+          action={
+            <div className="flex flex-wrap items-center gap-2">
+              <button
+                type="button"
+                onClick={() => document.getElementById('available-products')?.scrollIntoView({ behavior: 'smooth', block: 'start' })}
+                className="rounded-lg border border-gray-200 bg-white px-3 py-2 text-xs font-semibold text-gray-700 transition-colors hover:border-cyan-200 hover:text-[#00B4CC]"
+              >
+                Explore products
+              </button>
+              <button
+                type="button"
+                onClick={openProductRecommendation}
+                className="rounded-lg bg-[#00B4CC] px-3 py-2 text-xs font-semibold text-white transition-colors hover:bg-[#009cb2]"
+              >
+                Help me choose
+              </button>
+            </div>
+          }
+        />
+      </div>
 
       {/* Primary QR API Integration Card */}
       <div id="available-products" className="grid w-full grid-cols-1 md:grid-cols-2 gap-6">
