@@ -22,8 +22,8 @@ export const SandboxWelcomeModal: React.FC = () => {
     if (currentRoute === '/welcome' || currentRoute === '/sandbox-welcome') {
       setRoute('/home');
     }
-    // Launch guided tour on top of dashboard
-    setTourStep(1);
+    // Show the first-time dashboard without launching a separate tour overlay
+    setTourStep(null);
   };
 
   const handleSkip = () => {
@@ -168,7 +168,7 @@ export const SandboxWelcomeModal: React.FC = () => {
             </div>
           </div>
 
-          {/* Actions: Start Tour vs Skip */}
+          {/* Actions: Continue to dashboard */}
           <div className="flex flex-col sm:flex-row items-center gap-2.5 pt-1">
             <button
               type="button"

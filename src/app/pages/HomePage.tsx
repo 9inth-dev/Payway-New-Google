@@ -109,6 +109,44 @@ export const HomePage: React.FC = () => {
     },
   ];
 
+  if (isFirstTime) {
+    return (
+      <div className="flex w-full flex-col gap-7 pb-12">
+        <div>
+          <h1 className="text-xl font-bold" style={{ color: '#0D3D4F' }}>
+            Welcome to PayWay Sandbox, <span style={{ color: '#00B4CC' }}>Henry</span>
+          </h1>
+          <p className="mt-1 text-xs text-gray-500">Build and test PayWay integrations safely before accepting live payments.</p>
+        </div>
+        <section className="rounded-2xl border border-cyan-100 bg-white p-6 shadow-2xs sm:p-8" aria-labelledby="first-time-setup-title">
+          <div className="flex flex-col gap-6">
+            <div>
+              <p className="text-xs font-bold uppercase tracking-wider text-[#00B4CC]">Get started with PayWay Sandbox</p>
+              <h2 id="first-time-setup-title" className="mt-2 text-2xl font-bold text-[#0D3D4F]">Your setup guide</h2>
+              <p className="mt-2 max-w-2xl text-sm leading-relaxed text-gray-500">Complete these steps to start building and testing safely. Your progress will update as you use PayWay.</p>
+            </div>
+            <div className="grid gap-3 md:grid-cols-2">
+              {[
+                ['1', 'Create your first integration', 'Choose a PayWay product and create your Sandbox integration.', '/integrations'],
+                ['2', 'Make your first API call', 'Send a successful request to a PayWay Sandbox endpoint.', '/developer/docs'],
+                ['3', 'Make your first test payment', 'Run a payment through the Sandbox simulator.', '/transactions'],
+                ['4', 'Request Production Access', 'Complete testing and submit your integration for review.', '/integrations/qr-api/production'],
+                ['5', 'Go live with your first product', 'Get approved and receive your production credentials.', '/integrations/qr-api/production'],
+              ].map(([number, title, description, route]) => (
+                <button key={number} type="button" onClick={() => setRoute(route)} className="flex items-start gap-3 rounded-xl border border-gray-100 bg-gray-50/60 p-4 text-left transition-colors hover:border-cyan-200 hover:bg-cyan-50/40">
+                  <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full border-2 border-[#00B4CC] text-xs font-bold text-[#00B4CC]">{number}</span>
+                  <span><span className="block text-sm font-semibold text-[#0D3D4F]">{title}</span><span className="mt-1 block text-xs leading-relaxed text-gray-500">{description}</span></span>
+                </button>
+              ))}
+            </div>
+            <div className="flex justify-end border-t border-gray-100 pt-5"><button type="button" onClick={() => setRoute('/integrations')} className="rounded-lg bg-[#00B4CC] px-5 py-2.5 text-sm font-semibold text-white hover:bg-[#009cb2]">Start setup →</button></div>
+          </div>
+        </section>
+        <div data-tour="credentials"><div className="mb-3 text-xs font-bold uppercase tracking-wider text-gray-400">Sandbox Credentials</div><CredentialCard title="Sandbox Credentials" description="Use these test keys to authenticate your Sandbox API requests." showMerchantId={true} /></div>
+      </div>
+    );
+  }
+
   return (
     <div className="flex flex-col gap-7 w-full pb-12">
       {/* Welcome Header */}
