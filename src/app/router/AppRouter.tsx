@@ -8,7 +8,6 @@ import { CreateTransactionModal } from '../components/layout/CreateTransactionMo
 import { ReviewFeedbackModal } from '../components/qr/ReviewFeedbackModal';
 import { PrototypeControlsModal } from '../components/layout/PrototypeControlsModal';
 import { GuidedTourOverlay } from '../components/layout/GuidedTourOverlay';
-import { FloatingSetupGuide } from '../components/layout/FloatingSetupGuide';
 import { ToastContainer } from '../components/common/Toast';
 
 import { LoginPage } from '../pages/LoginPage';
@@ -136,9 +135,6 @@ export const AppRouter: React.FC = () => {
       <ReviewFeedbackModal />
       <PrototypeControlsModal isOpen={showPrototypeModal} onClose={() => setShowPrototypeModal(false)} />
       <ToastContainer />
-
-      {/* Floating Setup Guide */}
-      <FloatingSetupGuide />
 
       {/* Welcome Screen Overlay on top of Dashboard */}
       {isWelcomeOverlayOpen && <SandboxWelcomeModal />}
