@@ -164,19 +164,7 @@ export const HomePage: React.FC = () => {
       {/* Attention Card (If changes requested by ABA PayWay review) */}
       <AttentionCard className="mb-0" />
 
-      {/* ================= SECTION 2: SANDBOX CREDENTIALS ================= */}
-      <div data-tour="credentials">
-        <div className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-3">
-          Sandbox Credentials
-        </div>
-        <CredentialCard
-          title="Sandbox Credentials"
-          description="Use these test keys to authenticate your Sandbox API requests."
-          showMerchantId={true}
-        />
-      </div>
-
-      {/* ================= SECTION 3: QR API ================= */}
+      {/* ================= SECTION 2: QR API ================= */}
       <div>
         <div className="flex items-center justify-between mb-3">
           <div>
