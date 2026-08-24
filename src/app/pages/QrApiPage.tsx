@@ -10,6 +10,7 @@ import { QrSimulatorModal, SimulatorScenarioMode } from '../components/qr/QrSimu
 import { ApplyForProductionModal } from '../components/qr/ApplyForProductionModal';
 import { ProvisionalProductionDashboard } from '../components/qr/ProvisionalProductionDashboard';
 import { ProductionReadinessAccordion } from '../components/qr/ProductionReadinessAccordion';
+import { UiEvidenceSection } from '../components/qr/UiEvidenceSection';
 import { AttentionCard } from '../components/qr/AttentionCard';
 import { TransactionDetailSideModal } from '../components/transactions/TransactionDetailSideModal';
 import { Transaction } from '../types/sandbox';
@@ -39,8 +40,9 @@ export const QrApiPage: React.FC = () => {
   const [selectedCodeLang, setSelectedCodeLang] = useState<'curl' | 'javascript' | 'php' | 'python'>('curl');
 
   // Determine active sub-tab from current route or fallback
-  let activeTab: 'overview' | 'testing' | 'activity' | 'production' = 'overview';
+  let activeTab: 'overview' | 'testing' | 'evidence' | 'activity' | 'production' = 'overview';
   if (currentRoute.endsWith('/testing')) activeTab = 'testing';
+  if (currentRoute.endsWith('/evidence')) activeTab = 'evidence';
   if (currentRoute.endsWith('/activity')) activeTab = 'activity';
   if (currentRoute.endsWith('/production') || currentRoute.endsWith('/production-access')) activeTab = 'production';
 
@@ -156,13 +158,13 @@ export const QrApiPage: React.FC = () => {
         </button>
 
         <button
-          onClick={() => setRoute('/integrations/qr-api/production')}
+          onClick={() => setRoute('/integrations/qr-api/evidence')}
           className={`pb-3 transition-colors relative cursor-pointer ${
-            activeTab === 'production' ? 'text-[#00B4CC] font-bold' : 'hover:text-gray-800'
+            activeTab === 'evidence' ? 'text-[#00B4CC] font-bold' : 'hover:text-gray-800'
           }`}
         >
-          Production Access
-          {activeTab === 'production' && (
+          UI Evidence
+          {activeTab === 'evidence' && (
             <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-[#00B4CC] rounded-full" />
           )}
         </button>
@@ -570,7 +572,35 @@ export const QrApiPage: React.FC = () => {
         </div>
       )}
 
-      {/* TAB 3: ACTIVITY LOGS */}
+      {/* TAB 3: UI EVIDENCE */}
+      {activeTab === 'evidence' && (
+        <div className="flex flex-col gap-4">
+          {!isTechnicalTestingComplete(state) && (
+            <div className="rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-xs leading-relaxed text-amber-800">
+              Complete all 5 technical testing requirements before uploading UI evidence. Your evidence checklist is ready to review below.
+            </div>
+          )}
+          <div className={!isTechnicalTestingComplete(state) ? 'pointer-events-none opacity-60' : ''}>
+            <UiEvidenceSection stepNumber={3} />
+          </div>
+          <div className="flex items-center justify-between rounded-xl border border-gray-100 bg-white px-5 py-4 shadow-2xs">
+            <div>
+              <p className="text-xs font-bold text-gray-800">Next stage: Request production access</p>
+              <p className="mt-1 text-xs text-gray-500">Both technical testing and UI evidence must be complete.</p>
+            </div>
+            <button
+              type="button"
+              disabled={!isReadyForProduction(state)}
+              onClick={() => setRoute('/integrations/qr-api/production')}
+              className="rounded-lg bg-[#00B4CC] px-3.5 py-2 text-xs font-semibold text-white transition-colors hover:bg-[#009cb2] disabled:cursor-not-allowed disabled:bg-gray-200 disabled:text-gray-400"
+            >
+              Request access →
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* TAB 4: ACTIVITY LOGS */}
       {activeTab === 'activity' && (
         <Card>
           <CardHeader>
