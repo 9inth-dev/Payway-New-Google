@@ -4,8 +4,10 @@ import { useSandbox } from '../../context/SandboxContext';
 interface NavItemDef {
   label: string;
   icon: string;
-  route: string;
+  route?: string;
   badge?: string;
+  href?: string;
+  external?: boolean;
 }
 
 const PRIMARY_NAV: NavItemDef[] = [
@@ -21,7 +23,7 @@ const PRIMARY_NAV: NavItemDef[] = [
 const DEV_NAV: NavItemDef[] = [
   { label: 'API Keys', icon: 'key', route: '/developer/api-keys' },
   { label: 'Developer Settings', icon: 'sliders', route: '/developer/settings' },
-  { label: 'API Documentation', icon: 'book', route: '/developer/docs' },
+  { label: 'API Documentation', icon: 'book', href: 'https://developer.payway.com.kh/', external: true },
   { label: 'API Activity', icon: 'activity', route: '/developer/activity' },
 ];
 
@@ -95,12 +97,14 @@ export const Sidebar: React.FC = () => {
           <div className="flex flex-col gap-0.5 mt-0.5">
             {DEV_NAV.map(item => (
               <NavItem
-                key={item.route}
+                key={item.route || item.href}
                 label={item.label}
                 icon={item.icon}
-                active={isRouteActive(item.route)}
+                active={item.route ? isRouteActive(item.route) : false}
                 sub
-                onClick={() => setRoute(item.route)}
+                href={item.href}
+                external={item.external}
+                onClick={() => item.route && setRoute(item.route)}
               />
             ))}
           </div>
@@ -149,6 +153,8 @@ function NavItem({
   sub,
   badge,
   dataTour,
+  href,
+  external,
   onClick,
 }: {
   label: string;
@@ -157,27 +163,82 @@ function NavItem({
   sub?: boolean;
   badge?: string;
   dataTour?: string;
+  href?: string;
+  external?: boolean;
   onClick: () => void;
 }) {
+  const baseStyle = {
+    padding: sub ? '7px 12px 7px 20px' : '9px 12px',
+    color: active ? '#00B4CC' : '#5A6E7A',
+    backgroundColor: active ? '#E6F8FA' : 'transparent',
+    borderLeft: active ? '3px solid #00B4CC' : '3px solid transparent',
+    fontWeight: active ? 600 : 500,
+  };
+
+  const handleMouseEnter = (e: React.MouseEvent<HTMLElement>) => {
+    if (!active) (e.currentTarget as HTMLElement).style.backgroundColor = '#F5F7F8';
+  };
+
+  const handleMouseLeave = (e: React.MouseEvent<HTMLElement>) => {
+    if (!active) (e.currentTarget as HTMLElement).style.backgroundColor = 'transparent';
+  };
+
+  const content = (
+    <div className="flex items-center justify-between w-full rounded text-left transition-colors cursor-pointer"
+      style={baseStyle}
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
+    >
+      <div className="flex items-center gap-2.5 min-w-0">
+        <NavIcon name={icon} active={!!active} />
+        <span className="truncate text-xs sm:text-sm" style={{ fontSize: sub ? 12 : 13 }}>
+          {label}
+        </span>
+      </div>
+      {badge && (
+        <span className="text-[10px] font-bold px-1.5 py-0.2 rounded bg-cyan-100 text-cyan-800 shrink-0">
+          {badge}
+        </span>
+      )}
+    </div>
+  );
+
+  if (external && href) {
+    return (
+      <a
+        href={href}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="flex items-center justify-between w-full rounded text-left transition-colors"
+        style={baseStyle}
+        onMouseEnter={handleMouseEnter}
+        onMouseLeave={handleMouseLeave}
+        data-tour={dataTour}
+      >
+        <div className="flex items-center gap-2.5 min-w-0">
+          <NavIcon name={icon} active={!!active} />
+          <span className="truncate text-xs sm:text-sm" style={{ fontSize: sub ? 12 : 13 }}>
+            {label}
+          </span>
+        </div>
+        {badge && (
+          <span className="text-[10px] font-bold px-1.5 py-0.2 rounded bg-cyan-100 text-cyan-800 shrink-0">
+            {badge}
+          </span>
+        )}
+      </a>
+    );
+  }
+
   return (
     <button
       type="button"
       data-tour={dataTour}
       onClick={onClick}
       className="flex items-center justify-between w-full rounded text-left transition-colors cursor-pointer"
-      style={{
-        padding: sub ? '7px 12px 7px 20px' : '9px 12px',
-        color: active ? '#00B4CC' : '#5A6E7A',
-        backgroundColor: active ? '#E6F8FA' : 'transparent',
-        borderLeft: active ? '3px solid #00B4CC' : '3px solid transparent',
-        fontWeight: active ? 600 : 500,
-      }}
-      onMouseEnter={e => {
-        if (!active) (e.currentTarget as HTMLElement).style.backgroundColor = '#F5F7F8';
-      }}
-      onMouseLeave={e => {
-        if (!active) (e.currentTarget as HTMLElement).style.backgroundColor = 'transparent';
-      }}
+      style={baseStyle}
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
     >
       <div className="flex items-center gap-2.5 min-w-0">
         <NavIcon name={icon} active={!!active} />

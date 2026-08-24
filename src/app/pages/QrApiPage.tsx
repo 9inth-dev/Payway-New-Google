@@ -3,7 +3,6 @@ import { useSandbox } from '../context/SandboxContext';
 import { PageHeader } from '../components/common/PageHeader';
 import { StatusBadge } from '../components/common/StatusBadge';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '../components/common/Card';
-import { CredentialCard } from '../components/common/CredentialCard';
 import { SANDBOX_CREDENTIALS } from '../constants/sandboxCredentials';
 import { getVerifiedRequirementsCount, isTechnicalTestingComplete, isUiEvidenceComplete, isReadyForProduction } from '../utils/readiness';
 import { RequirementCard } from '../components/qr/RequirementCard';
@@ -263,18 +262,6 @@ export const QrApiPage: React.FC = () => {
               </div>
             </div>
           )}
-
-          {/* SECTION: SANDBOX CREDENTIALS */}
-          <div>
-            <div className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-2.5">
-              Sandbox Credentials
-            </div>
-            <CredentialCard
-              title="Sandbox API Credentials"
-              description="Use your Merchant ID, API Key and RSA Public Key when authenticating PayWay QR API requests."
-              showMerchantId={true}
-            />
-          </div>
 
           {/* SECTION: START BUILDING */}
           <div ref={startBuildingRef} id="start-building">
