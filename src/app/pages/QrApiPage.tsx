@@ -284,40 +284,10 @@ export const QrApiPage: React.FC = () => {
                     <h3 className="mt-1 text-sm font-semibold text-gray-800">Generate KHQR Payments</h3>
                     <p className="mt-1 max-w-3xl text-xs leading-relaxed text-gray-500">Prefer to build it yourself? Explore the API, documentation, and code examples to start integrating.</p>
                   </div>
-                  <button type="button" onClick={() => document.getElementById('sample-code-block')?.scrollIntoView({ behavior: 'smooth', block: 'center' })} className="shrink-0 rounded-lg bg-[#00B4CC] px-3.5 py-2 text-xs font-semibold text-white hover:bg-[#009cb2]">Start building →</button>
                 </div>
-                <p className="text-xs text-gray-500 mt-1 leading-relaxed max-w-3xl">
-                  Call the PayWay QR endpoint to generate standardized NBC KHQR dynamic QR codes. Once generated, display the QR string or image to the customer to scan with ABA Mobile or any KHQR compatible banking app.
-                </p>
               </div>
 
-              {/* Quick Actions & Official Reference */}
-              <div className="flex flex-wrap items-center justify-between gap-3 pt-1">
-                <div className="flex flex-wrap items-center gap-2">
-                  <button
-                    onClick={() => setRoute('/developer/docs')}
-                    className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold bg-gray-50 text-gray-700 border border-gray-200 hover:bg-gray-100 transition-colors cursor-pointer"
-                  >
-                    <svg width="14" height="14" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-                      <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" />
-                      <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" />
-                    </svg>
-                    View API documentation
-                  </button>
-                  <a
-                    href={QR_API_DOCUMENTATION_URL}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold text-gray-700 bg-white border border-gray-200 hover:bg-gray-50 transition-colors cursor-pointer"
-                  >
-                    <span>Full QR API Guide</span>
-                    <ExternalLink className="w-3.5 h-3.5 text-gray-400" />
-                  </a>
-                </div>
-                <span className="text-[11px] text-gray-500 font-medium">
-                  Product: <strong className="text-gray-800">ABA PayWay QR API (KHQR)</strong>
-                </span>
-              </div>
+
 
               {/* Sample Request Code Block with Language Selector */}
               <div id="sample-code-block" className="mt-2 bg-gray-900 rounded-lg p-4 font-mono text-xs text-emerald-400 overflow-x-auto relative">
@@ -368,7 +338,7 @@ export const QrApiPage: React.FC = () => {
                 <div className="mt-4 flex flex-wrap items-center gap-2">
                   <button type="button" onClick={handleCopyAiContext} className="inline-flex items-center gap-1.5 rounded-lg bg-indigo-600 px-3 py-1.5 text-xs font-semibold text-white hover:bg-indigo-700"><Copy className="h-3.5 w-3.5" />{copiedAiContext ? 'Copied!' : 'Copy AI prompt'}</button>
                   <button type="button" onClick={handleDownloadAiContext} className="rounded-lg border border-indigo-200 bg-white px-3 py-1.5 text-xs font-semibold text-indigo-700 hover:bg-indigo-50">Download integration context</button>
-                  <span className="text-[11px] text-gray-500">No credentials included</span>
+                  <span className="text-[11px] text-gray-500">No API key is included — add your sandbox key before you start testing.</span>
                 </div>
               </div>
 
