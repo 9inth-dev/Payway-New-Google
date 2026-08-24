@@ -164,7 +164,30 @@ export const HomePage: React.FC = () => {
       {/* Attention Card (If changes requested by ABA PayWay review) */}
       <AttentionCard className="mb-0" />
 
-      {/* ================= SECTION 2: QR API ================= */}
+      {/* ================= SECTION 1: DEVELOPER TOOLS ================= */}
+      <div data-tour="developer-tools">
+        <div className="mb-3 text-xs font-bold uppercase tracking-wider text-gray-400">Developer Tools</div>
+        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
+          {developerTools.map(tool => (
+            <button key={tool.title} onClick={tool.onClick} className="flex items-center gap-3 rounded-xl border border-gray-100 bg-white p-3.5 text-left shadow-2xs transition-all hover:border-cyan-100 hover:shadow-md">
+              <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg" style={{ backgroundColor: tool.bg }}>{tool.icon}</div>
+              <div><div className="text-xs font-semibold text-gray-800">{tool.title}</div><div className="mt-0.5 text-[11px] text-gray-400">{tool.desc}</div></div>
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {/* ================= SECTION 2: SANDBOX CREDENTIALS ================= */}
+      <div data-tour="credentials">
+        <div className="mb-3 text-xs font-bold uppercase tracking-wider text-gray-400">Sandbox Credentials</div>
+        <CredentialCard
+          title="Sandbox API Credentials"
+          description="Use these credentials to authenticate your Sandbox API requests. Keep your API key private."
+          showMerchantId
+        />
+      </div>
+
+      {/* ================= SECTION 3: QR API ================= */}
       <div>
         <div className="flex items-center justify-between mb-3">
           <div>
@@ -271,16 +294,6 @@ export const HomePage: React.FC = () => {
         )}
       </div>
 
-      {/* ================= SECTION 3: SANDBOX CREDENTIALS ================= */}
-      <div data-tour="credentials">
-        <div className="mb-3 text-xs font-bold uppercase tracking-wider text-gray-400">Sandbox Credentials</div>
-        <CredentialCard
-          title="Sandbox API Credentials"
-          description="Use these credentials to authenticate your Sandbox API requests. Keep your API key private."
-          showMerchantId
-        />
-      </div>
-
       {/* ================= SECTION 4: RECENT API ACTIVITY ================= */}
       <div className="bg-white rounded-xl border border-gray-100 shadow-2xs overflow-hidden">
         <div className="px-6 py-4 border-b border-gray-100 flex items-center justify-between">
@@ -374,18 +387,6 @@ export const HomePage: React.FC = () => {
             </p>
           </div>
         )}
-      </div>
-
-      <div data-tour="developer-tools">
-        <div className="mb-3 text-xs font-bold uppercase tracking-wider text-gray-400">Developer Tools</div>
-        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
-          {developerTools.map(tool => (
-            <button key={tool.title} onClick={tool.onClick} className="flex items-center gap-3 rounded-xl border border-gray-100 bg-white p-3.5 text-left shadow-2xs transition-all hover:border-cyan-100 hover:shadow-md">
-              <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg" style={{ backgroundColor: tool.bg }}>{tool.icon}</div>
-              <div><div className="text-xs font-semibold text-gray-800">{tool.title}</div><div className="mt-0.5 text-[11px] text-gray-400">{tool.desc}</div></div>
-            </button>
-          ))}
-        </div>
       </div>
     </div>
   );
