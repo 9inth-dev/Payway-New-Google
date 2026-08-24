@@ -75,9 +75,11 @@ export interface UiEvidenceState {
   recordingAttached: boolean;
   recordingFileName?: string;
   recordingFileSize?: string;
+  recordingFileData?: string;
   screenshotAttached: boolean;
   screenshotFileName?: string;
   screenshotFileSize?: string;
+  screenshots?: EvidenceItem[];
 }
 
 export interface ProductionReadiness {

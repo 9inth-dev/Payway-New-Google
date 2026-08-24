@@ -23,16 +23,15 @@ export function isTechnicalTestingComplete(arg?: SandboxState | QrTestingState |
 }
 
 export function isUiEvidenceComplete(state?: SandboxState | any): boolean {
-  if (!state || !state.uiEvidence) return false;
-  return Boolean(state.uiEvidence.recordingAttached && state.uiEvidence.screenshotAttached);
+  if (!state?.uiEvidence) return false;
+  const screenshots = state.uiEvidence.screenshots?.length ?? (state.uiEvidence.screenshotAttached ? 1 : 0);
+  return screenshots > 0 || Boolean(state.uiEvidence.recordingAttached);
 }
 
 export function getUiEvidenceAttachedCount(state?: SandboxState | any): number {
-  if (!state || !state.uiEvidence) return 0;
-  let count = 0;
-  if (state.uiEvidence.recordingAttached) count++;
-  if (state.uiEvidence.screenshotAttached) count++;
-  return count;
+  if (!state?.uiEvidence) return 0;
+  const screenshots = state.uiEvidence.screenshots?.length ?? (state.uiEvidence.screenshotAttached ? 1 : 0);
+  return screenshots + (state.uiEvidence.recordingAttached ? 1 : 0);
 }
 
 export function isReadyForProduction(state?: SandboxState | any): boolean {
