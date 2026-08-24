@@ -271,6 +271,16 @@ export const HomePage: React.FC = () => {
         )}
       </div>
 
+      {/* ================= SECTION 3: SANDBOX CREDENTIALS ================= */}
+      <div data-tour="credentials">
+        <div className="mb-3 text-xs font-bold uppercase tracking-wider text-gray-400">Sandbox Credentials</div>
+        <CredentialCard
+          title="Sandbox API Credentials"
+          description="Use these credentials to authenticate your Sandbox API requests. Keep your API key private."
+          showMerchantId
+        />
+      </div>
+
       {/* ================= SECTION 4: RECENT API ACTIVITY ================= */}
       <div className="bg-white rounded-xl border border-gray-100 shadow-2xs overflow-hidden">
         <div className="px-6 py-4 border-b border-gray-100 flex items-center justify-between">
