@@ -220,6 +220,14 @@ export const QrApiPage: React.FC = () => {
             </section>
           )}
 
+          {/* SECTION: GO LIVE CHECKLIST */}
+          <section className="rounded-xl border border-cyan-100 bg-white p-5 shadow-sm" aria-labelledby="go-live-checklist-title">
+            <div className="flex items-center justify-between gap-3"><div><p className="text-[11px] font-bold uppercase tracking-wider text-[#00B4CC]">Your path to production</p><h2 id="go-live-checklist-title" className="mt-1 text-base font-bold text-gray-900">Go live checklist</h2></div><span className="text-xs font-semibold text-gray-500">{isReadyForProduction(state) ? 'Ready to submit' : 'In progress'}</span></div>
+            <div className="mt-5 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+              {[['Build the integration', 'Use the API guide and code preview', true, '#start-building'], ['Technical test', `${verifiedCount}/5 requirements verified`, verifiedCount === 5, '/integrations/qr-api/testing'], ['UI submission', isUiEvidenceComplete(state) ? 'Evidence uploaded' : 'Upload screenshots or video', isUiEvidenceComplete(state), '/integrations/qr-api/evidence'], ['Submit request', isReadyForProduction(state) ? 'Ready for review' : 'Complete the steps above', state.productionAccessStatus !== 'sandbox', '/integrations/qr-api/production']].map(([title, detail, done, route]) => <button key={String(title)} type="button" onClick={() => route === '#start-building' ? startBuildingRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' }) : setRoute(String(route))} className="rounded-lg border border-gray-100 bg-gray-50/70 p-3 text-left transition-colors hover:border-cyan-200 hover:bg-cyan-50/40"><div className="flex items-center gap-2"><span className={`flex h-6 w-6 items-center justify-center rounded-full text-xs font-bold ${done ? 'bg-emerald-100 text-emerald-700' : 'bg-white text-gray-500 border border-gray-200'}`}>{done ? '✓' : '○'}</span><span className="text-xs font-semibold text-gray-800">{String(title)}</span></div><p className="mt-2 pl-8 text-[11px] leading-relaxed text-gray-500">{String(detail)}</p></button>)}
+            </div>
+          </section>
+
           {/* SECTION: PRODUCTION READINESS */}
           {state.productionAccessStatus === 'sandbox' && state.reviewStatus !== 'approved' && (
             <div>
@@ -288,6 +296,8 @@ export const QrApiPage: React.FC = () => {
               </div>
 
 
+
+              <div className="flex justify-end"><a href={QR_API_DOCUMENTATION_URL} target="_blank" rel="noreferrer" className="inline-flex items-center gap-1.5 rounded-lg border border-gray-200 bg-white px-3 py-1.5 text-xs font-semibold text-gray-700 transition-colors hover:bg-gray-50">Full QR API Guide <ExternalLink className="h-3.5 w-3.5 text-gray-400" /></a></div>
 
               {/* Sample Request Code Block with Language Selector */}
               <div id="sample-code-block" className="mt-2 bg-gray-900 rounded-lg p-4 font-mono text-xs text-emerald-400 overflow-x-auto relative">
