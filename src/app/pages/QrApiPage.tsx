@@ -429,7 +429,7 @@ export const QrApiPage: React.FC = () => {
             <div className="flex items-center gap-2.5 shrink-0 self-start md:self-center">
   {verifiedCount === 5 && !productionAccessRequested && (
   <button
-  onClick={() => setRoute('/integrations/qr-api/production')}
+  onClick={() => setRoute('/integrations/qr-api/evidence')}
   className="px-3.5 py-2 text-xs font-bold rounded-lg text-white bg-[#00B4CC] hover:bg-[#009cb2] transition-colors cursor-pointer flex items-center gap-1.5 shadow-xs"
   >
   <span>Request production access</span>
@@ -548,7 +548,7 @@ export const QrApiPage: React.FC = () => {
               type="button"
               disabled={!isReadyForProduction(state)}
               id="request-access"
-              onClick={() => setRoute('/integrations/qr-api/production')}
+              onClick={() => setRoute('/integrations/qr-api/evidence')}
               className="rounded-lg bg-[#00B4CC] px-3.5 py-2 text-xs font-semibold text-white transition-colors hover:bg-[#009cb2] disabled:cursor-not-allowed disabled:bg-gray-200 disabled:text-gray-400"
             >
               Request access →

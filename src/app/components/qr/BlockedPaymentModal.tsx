@@ -59,7 +59,7 @@ export const BlockedPaymentModal: React.FC<BlockedPaymentModalProps> = ({
           <button
             onClick={() => {
               onClose();
-              setRoute('/integrations/qr-api/production');
+              setRoute('/integrations/qr-api/evidence');
             }}
             className="px-5 py-2 text-xs font-bold text-white bg-slate-900 hover:bg-slate-800 rounded-xl transition-colors cursor-pointer shadow-xs"
           >
