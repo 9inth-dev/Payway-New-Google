@@ -466,6 +466,26 @@ export const QrApiPage: React.FC = () => {
             </div>
           </div>
 
+          {/* ABA SIMULATOR APP */}
+          <section className="rounded-xl border border-cyan-100 bg-cyan-50/30 p-5 shadow-2xs" aria-labelledby="aba-simulator-title">
+            <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+              <div className="flex items-start gap-3">
+                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-white text-[#00B4CC] shadow-xs" aria-hidden="true">
+                  <svg width="20" height="20" fill="none" stroke="currentColor" strokeWidth="1.8" viewBox="0 0 24 24"><rect x="6" y="2.5" width="12" height="19" rx="2" /><path d="M9 5h6M10 18.5h4" /></svg>
+                </div>
+                <div>
+                  <h3 id="aba-simulator-title" className="text-sm font-bold text-gray-900">ABA Simulator App</h3>
+                  <p className="mt-1 max-w-2xl text-xs leading-relaxed text-gray-500">Use the simulator to scan QR codes and test the payment flow without a live bank account.</p>
+                </div>
+              </div>
+              <div className="flex shrink-0 flex-wrap items-center gap-2">
+                <a href="https://testflight.apple.com/join/8fJ2w7Qx" target="_blank" rel="noreferrer" className="inline-flex items-center gap-1.5 rounded-lg bg-[#00B4CC] px-3.5 py-2 text-xs font-semibold text-white transition-colors hover:bg-[#009cb2]">Download for iOS <ExternalLink className="h-3.5 w-3.5" /></a>
+                <button type="button" disabled className="inline-flex items-center gap-1.5 rounded-lg border border-gray-200 bg-gray-100 px-3.5 py-2 text-xs font-semibold text-gray-400">Download APK</button>
+              </div>
+            </div>
+            <p className="mt-3 pl-0 text-[11px] text-gray-500 sm:pl-[52px]">iOS available via TestFlight. Android version coming soon.</p>
+          </section>
+
           {/* REQUIREMENTS CARDS LIST */}
           <div className="flex flex-col gap-4">
             <RequirementCard
