@@ -25,14 +25,14 @@ export const IntegrationsPage: React.FC = () => {
     }
 
     if (state.reviewStatus === 'submitted' || state.reviewStatus === 'under_review' || state.reviewStatus === 'resubmitted') {
-      setRoute('/integrations/qr-api/production');
+      setRoute('/integrations/qr-api/evidence');
     } else if (state.reviewStatus === 'changes_requested') {
-      setRoute('/integrations/qr-api/production');
+      setRoute('/integrations/qr-api/evidence');
       if (setShowFeedbackModal) setShowFeedbackModal(true);
     } else if (state.reviewStatus === 'approved' || state.productionAccessStatus === 'full_production') {
-      setRoute('/integrations/qr-api/production');
+      setRoute('/integrations/qr-api/evidence');
     } else if (isReadyForProduction(state)) {
-      setRoute('/integrations/qr-api/production');
+      setRoute('/integrations/qr-api/evidence');
     } else {
       setRoute('/integrations/qr-api');
     }

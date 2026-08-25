@@ -139,7 +139,7 @@ export const PrototypeControlsModal: React.FC<PrototypeControlsModalProps> = ({ 
           currencySupport: { status: 'verified', testedCurrencies: ['USD', 'KHR'], lastEventTime: now.toLocaleTimeString(), lastDetails: 'Both USD and KHR tested' },
         });
         addToast('Preset Applied: Production Ready', '5/5 requirements verified! Ready to apply.', 'success');
-        setRoute('/integrations/qr-api/production');
+        setRoute('/integrations/qr-api/evidence');
         break;
 
       case 'submitted':
@@ -152,7 +152,7 @@ export const PrototypeControlsModal: React.FC<PrototypeControlsModalProps> = ({ 
           reviewStatus: 'submitted',
         });
         addToast('Preset Applied: Request Submitted', 'Application queued for PayWay review', 'info');
-        setRoute('/integrations/qr-api/production');
+        setRoute('/integrations/qr-api/evidence');
         break;
 
       case 'under_review':
@@ -165,7 +165,7 @@ export const PrototypeControlsModal: React.FC<PrototypeControlsModalProps> = ({ 
           reviewStatus: 'under_review',
         });
         addToast('Preset Applied: Under PayWay Review', 'PayWay team evaluating submission', 'info');
-        setRoute('/integrations/qr-api/production');
+        setRoute('/integrations/qr-api/evidence');
         break;
 
       case 'changes_requested':
@@ -178,7 +178,7 @@ export const PrototypeControlsModal: React.FC<PrototypeControlsModalProps> = ({ 
           reviewStatus: 'changes_requested',
         });
         addToast('Preset Applied: Changes Requested', 'PayWay requested application updates', 'warning');
-        setRoute('/integrations/qr-api/production');
+        setRoute('/integrations/qr-api/evidence');
         break;
 
       case 'resubmitted':
@@ -191,7 +191,7 @@ export const PrototypeControlsModal: React.FC<PrototypeControlsModalProps> = ({ 
           reviewStatus: 'resubmitted',
         });
         addToast('Preset Applied: Resubmitted for Review', 'Updated request resubmitted to PayWay', 'info');
-        setRoute('/integrations/qr-api/production');
+        setRoute('/integrations/qr-api/evidence');
         break;
 
       case 'approved':
@@ -208,7 +208,7 @@ export const PrototypeControlsModal: React.FC<PrototypeControlsModalProps> = ({ 
           productionApiKey: undefined,
         });
         addToast('Preset Applied: Approved', 'Production access approved — credentials sent by email', 'success');
-        setRoute('/integrations/qr-api/production');
+        setRoute('/integrations/qr-api/evidence');
         break;
 
       default:

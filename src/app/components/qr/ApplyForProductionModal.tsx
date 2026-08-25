@@ -131,6 +131,8 @@ export const ApplyForProductionModal: React.FC<ApplyForProductionModalProps> = (
   const [newOutletName, setNewOutletName] = useState<string>('Main Branch');
   const [newPatentFile, setNewPatentFile] = useState<string | null>(null);
   const [newLogoId, setNewLogoId] = useState<string>('logo-store');
+  const [uploadedLogo, setUploadedLogo] = useState<string | null>(null);
+  const [uploadError, setUploadError] = useState<string | null>(null);
   const [newCategory, setNewCategory] = useState<string>(BUSINESS_CATEGORIES[0]);
   const [newAddress, setNewAddress] = useState<string>('#45, Street 240, Sangkat Chaktomuk, Khan Daun Penh, Phnom Penh');
   const [businessFormError, setBusinessFormError] = useState<string | null>(null);
@@ -337,6 +339,16 @@ export const ApplyForProductionModal: React.FC<ApplyForProductionModalProps> = (
     addToast('Business Profile Created', `Added "${createdProfile.name}" with verified settlement accounts`, 'success');
   };
 
+  const handleFileUpload = (file: File | undefined, kind: 'logo' | 'patent') => {
+    if (!file) return;
+    const limits = kind === 'logo' ? { types: ['image/png', 'image/jpeg', 'image/webp'], max: 5 * 1024 * 1024 } : { types: ['application/pdf', 'image/png', 'image/jpeg'], max: 10 * 1024 * 1024 };
+    if (!limits.types.includes(file.type) || file.size > limits.max) { setUploadError(kind === 'logo' ? 'Logo must be PNG, JPG, or WebP under 5MB.' : 'Document must be PDF, PNG, or JPG under 10MB.'); return; }
+    setUploadError(null);
+    const reader = new FileReader();
+    reader.onload = () => kind === 'logo' ? setUploadedLogo(String(reader.result)) : setUploadedPatent(file.name);
+    reader.readAsDataURL(file);
+  };
+
   const handleFinalSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!confirmedAuth) return;
@@ -406,7 +418,8 @@ export const ApplyForProductionModal: React.FC<ApplyForProductionModalProps> = (
             <span className="text-xs text-cyan-100 font-medium">Step {step} of 6</span>
           </div>
 
-          <h2 className="text-xl font-bold">Apply for Production Access</h2>
+          <div className="mb-2 inline-flex items-center rounded-full bg-cyan-400/15 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider text-cyan-200">QR API · Sandbox</div>
+  <h2 className="text-xl font-bold">Apply for Production Access</h2>
           <p className="text-xs text-cyan-100 mt-0.5">
             Connect your merchant business, submit business documentation, select payment methods, and request live QR API access.
           </p>
@@ -1120,6 +1133,11 @@ export const ApplyForProductionModal: React.FC<ApplyForProductionModalProps> = (
                         <p className="text-[11px] text-gray-500">
                           This logo can appear to customers during PayWay payment experiences once the business is approved.
                         </p>
+                        <label className="flex cursor-pointer items-center gap-3 rounded-xl border-2 border-dashed border-gray-200 bg-gray-50 p-3 hover:border-cyan-300">
+                          {uploadedLogo ? <img src={uploadedLogo} alt="Uploaded business logo" className="h-12 w-12 rounded-lg object-cover" /> : <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-white text-gray-400"><Upload className="h-5 w-5" /></div>}
+                          <span className="text-xs font-semibold text-gray-700">{uploadedLogo ? 'Replace uploaded logo' : 'Upload business logo'}<span className="mt-1 block text-[11px] font-normal text-gray-500">PNG, JPG, or WebP · Max 5MB</span></span>
+                          <input type="file" accept="image/png,image/jpeg,image/webp" className="sr-only" onChange={e => handleFileUpload(e.target.files?.[0], 'logo')} />
+                        </label>
                         <div className="grid grid-cols-4 gap-2 pt-1">
                           {SAMPLE_LOGOS.map(logo => {
                             const isSelected = newLogoId === logo.id;
@@ -1401,7 +1419,14 @@ export const ApplyForProductionModal: React.FC<ApplyForProductionModalProps> = (
                   )}
                 </div>
 
-                {/* Identity Verification Notice */}
+                  <div className="rounded-xl border border-dashed border-gray-300 bg-gray-50 p-4">
+                    <div className="flex items-center justify-between gap-3"><div><p className="text-xs font-bold text-gray-800">Business / patent document</p><p className="mt-1 text-[11px] text-gray-500">PDF, PNG, or JPG · Maximum 10MB</p></div>{activePatentDoc && <span className="text-[10px] font-bold text-emerald-700">Attached</span>}</div>
+                    <label className="mt-3 inline-flex cursor-pointer items-center gap-1.5 rounded-lg border border-gray-300 bg-white px-3 py-2 text-xs font-semibold text-gray-700 hover:bg-gray-50"><Upload className="h-3.5 w-3.5" /> {activePatentDoc ? 'Replace document' : 'Upload document'}<input type="file" accept="application/pdf,image/png,image/jpeg" className="sr-only" onChange={e => handleFileUpload(e.target.files?.[0], 'patent')} /></label>
+                    {activePatentDoc && <span className="ml-3 text-[11px] font-mono text-emerald-700">{activePatentDoc}</span>}
+                    {uploadError && <p className="mt-2 text-[11px] font-medium text-red-600">{uploadError}</p>}
+                  </div>
+
+                  {/* Identity Verification Notice */}
                 <div className="p-3.5 bg-emerald-50/70 border border-emerald-200 rounded-xl flex items-start gap-2.5">
                   <ShieldCheck className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
                   <div className="text-xs text-emerald-900 leading-relaxed">

@@ -40,19 +40,19 @@ export const HomePage: React.FC = () => {
   let qrStatusVariant: StatusVariant = 'testing';
 
   if (isLive) {
-    qrStage = 'Live'; qrProgressLabel = 'PRODUCTION ACCESS'; qrProgressValue = 'Live'; qrStatusLabel = 'Live'; qrCtaLabel = 'View integration'; qrCtaRoute = '/integrations/qr-api/production'; qrStatusVariant = 'live';
+    qrStage = 'Live'; qrProgressLabel = 'PRODUCTION ACCESS'; qrProgressValue = 'Live'; qrStatusLabel = 'Live'; qrCtaLabel = 'View integration'; qrCtaRoute = '/integrations/qr-api/evidence'; qrStatusVariant = 'live';
   } else if (isApproved) {
-    qrStage = 'Production Approved'; qrProgressLabel = 'PRODUCTION ACCESS'; qrProgressValue = 'Approved'; qrStatusLabel = 'Production Approved'; qrCtaLabel = 'View integration'; qrCtaRoute = '/integrations/qr-api/production'; qrStatusVariant = 'approved';
+    qrStage = 'Production Approved'; qrProgressLabel = 'PRODUCTION ACCESS'; qrProgressValue = 'Approved'; qrStatusLabel = 'Production Approved'; qrCtaLabel = 'View integration'; qrCtaRoute = '/integrations/qr-api/evidence'; qrStatusVariant = 'approved';
   } else if (state.reviewStatus === 'changes_requested' || state.productionAccessStatus === 'changes_requested') {
-    qrStage = 'Changes Requested'; qrProgressLabel = 'PRODUCTION REVIEW'; qrProgressValue = 'Changes requested'; qrStatusLabel = 'Changes Requested'; qrCtaLabel = 'Review feedback'; qrCtaRoute = '/integrations/qr-api/production'; qrStatusVariant = 'changes_requested';
+    qrStage = 'Changes Requested'; qrProgressLabel = 'PRODUCTION REVIEW'; qrProgressValue = 'Changes requested'; qrStatusLabel = 'Changes Requested'; qrCtaLabel = 'Review feedback'; qrCtaRoute = '/integrations/qr-api/evidence'; qrStatusVariant = 'changes_requested';
   } else if (state.reviewStatus === 'submitted' || state.reviewStatus === 'under_review' || state.reviewStatus === 'resubmitted' || state.productionAccessStatus === 'submitted' || state.productionAccessStatus === 'under_review' || state.productionAccessStatus === 'resubmitted') {
-    qrStage = 'Under Review'; qrProgressLabel = 'PRODUCTION REVIEW'; qrProgressValue = state.reviewStatus === 'submitted' || state.productionAccessStatus === 'submitted' ? 'Submitted' : 'Under review'; qrStatusLabel = 'Under Review'; qrCtaLabel = 'View review status'; qrCtaRoute = '/integrations/qr-api/production'; qrStatusVariant = state.reviewStatus === 'resubmitted' ? 'resubmitted' : 'under_review';
+    qrStage = 'Under Review'; qrProgressLabel = 'PRODUCTION REVIEW'; qrProgressValue = state.reviewStatus === 'submitted' || state.productionAccessStatus === 'submitted' ? 'Submitted' : 'Under review'; qrStatusLabel = 'Under Review'; qrCtaLabel = 'View review status'; qrCtaRoute = '/integrations/qr-api/evidence'; qrStatusVariant = state.reviewStatus === 'resubmitted' ? 'resubmitted' : 'under_review';
   } else if (hasProductionApplication) {
-    qrStage = 'Production Application'; qrProgressLabel = 'PRODUCTION APPLICATION'; qrProgressValue = 'In progress'; qrStatusLabel = 'Application in Progress'; qrCtaLabel = 'Continue application'; qrCtaRoute = '/integrations/qr-api/production'; qrStatusVariant = 'in_progress';
+    qrStage = 'Production Application'; qrProgressLabel = 'PRODUCTION APPLICATION'; qrProgressValue = 'In progress'; qrStatusLabel = 'Application in Progress'; qrCtaLabel = 'Continue application'; qrCtaRoute = '/integrations/qr-api/evidence'; qrStatusVariant = 'in_progress';
   } else if (technicalComplete && evidenceComplete) {
-    qrStage = 'Ready for Production Access'; qrProgressLabel = 'PRODUCTION READINESS'; qrProgressValue = 'Ready to request access'; qrStatusLabel = 'Production Ready'; qrCtaLabel = 'Request production access'; qrCtaRoute = '/integrations/qr-api/production'; qrStatusVariant = 'active';
+    qrStage = 'Ready for Production Access'; qrProgressLabel = 'PRODUCTION READINESS'; qrProgressValue = 'Ready to request access'; qrStatusLabel = 'Production Ready'; qrCtaLabel = 'Request production access'; qrCtaRoute = '/integrations/qr-api/evidence'; qrStatusVariant = 'active';
   } else if (technicalComplete) {
-    qrStage = 'UI Evidence'; qrProgressLabel = 'UI EVIDENCE'; qrProgressValue = `${evidenceCount} of 2 uploaded`; qrStatusLabel = 'Evidence Required'; qrCtaLabel = 'Upload UI evidence'; qrCtaRoute = '/integrations/qr-api/production'; qrStatusVariant = 'pending';
+    qrStage = 'UI Evidence'; qrProgressLabel = 'UI EVIDENCE'; qrProgressValue = `${evidenceCount} of 2 uploaded`; qrStatusLabel = 'Evidence Required'; qrCtaLabel = 'Upload UI evidence'; qrCtaRoute = '/integrations/qr-api/evidence'; qrStatusVariant = 'pending';
   }
 
   const lastActivityLabel = latestActivity
@@ -130,8 +130,8 @@ export const HomePage: React.FC = () => {
                 ['1', 'Create your first integration', 'Choose a PayWay product and create your Sandbox integration.', '/products'],
                 ['2', 'Make your first API call', 'Send a successful request to a PayWay Sandbox endpoint.', '/developer/docs'],
                 ['3', 'Make your first test payment', 'Run a payment through the Sandbox simulator.', '/transactions'],
-                ['4', 'Request Production Access', 'Complete testing and submit your integration for review.', '/integrations/qr-api/production'],
-                ['5', 'Go live with your first product', 'Get approved and receive your production credentials.', '/integrations/qr-api/production'],
+                ['4', 'Request Production Access', 'Complete testing and submit your integration for review.', '/integrations/qr-api/evidence'],
+                ['5', 'Go live with your first product', 'Get approved and receive your production credentials.', '/integrations/qr-api/evidence'],
               ].map(([number, title, description, route]) => (
                 <button key={number} type="button" onClick={() => setRoute(route)} className="flex items-start gap-3 rounded-xl border border-gray-100 bg-gray-50/60 p-4 text-left transition-colors hover:border-cyan-200 hover:bg-cyan-50/40">
                   <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full border-2 border-[#00B4CC] text-xs font-bold text-[#00B4CC]">{number}</span>
@@ -164,7 +164,30 @@ export const HomePage: React.FC = () => {
       {/* Attention Card (If changes requested by ABA PayWay review) */}
       <AttentionCard className="mb-0" />
 
-      {/* ================= SECTION 2: QR API ================= */}
+      {/* ================= SECTION 1: DEVELOPER TOOLS ================= */}
+      <div data-tour="developer-tools">
+        <div className="mb-3 text-xs font-bold uppercase tracking-wider text-gray-400">Developer Tools</div>
+        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
+          {developerTools.map(tool => (
+            <button key={tool.title} onClick={tool.onClick} className="flex items-center gap-3 rounded-xl border border-gray-100 bg-white p-3.5 text-left shadow-2xs transition-all hover:border-cyan-100 hover:shadow-md">
+              <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg" style={{ backgroundColor: tool.bg }}>{tool.icon}</div>
+              <div><div className="text-xs font-semibold text-gray-800">{tool.title}</div><div className="mt-0.5 text-[11px] text-gray-400">{tool.desc}</div></div>
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {/* ================= SECTION 2: SANDBOX CREDENTIALS ================= */}
+      <div data-tour="credentials">
+        <div className="mb-3 text-xs font-bold uppercase tracking-wider text-gray-400">Sandbox Credentials</div>
+        <CredentialCard
+          title="Sandbox API Credentials"
+          description="Use these credentials to authenticate your Sandbox API requests. Keep your API key private."
+          showMerchantId
+        />
+      </div>
+
+      {/* ================= SECTION 3: QR API ================= */}
       <div>
         <div className="flex items-center justify-between mb-3">
           <div>
@@ -364,18 +387,6 @@ export const HomePage: React.FC = () => {
             </p>
           </div>
         )}
-      </div>
-
-      <div data-tour="developer-tools">
-        <div className="mb-3 text-xs font-bold uppercase tracking-wider text-gray-400">Developer Tools</div>
-        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
-          {developerTools.map(tool => (
-            <button key={tool.title} onClick={tool.onClick} className="flex items-center gap-3 rounded-xl border border-gray-100 bg-white p-3.5 text-left shadow-2xs transition-all hover:border-cyan-100 hover:shadow-md">
-              <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg" style={{ backgroundColor: tool.bg }}>{tool.icon}</div>
-              <div><div className="text-xs font-semibold text-gray-800">{tool.title}</div><div className="mt-0.5 text-[11px] text-gray-400">{tool.desc}</div></div>
-            </button>
-          ))}
-        </div>
       </div>
     </div>
   );
