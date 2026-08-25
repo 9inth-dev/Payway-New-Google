@@ -15,7 +15,6 @@ interface RequirementCardProps {
   actionUrl?: string;
   actionRoute?: string;
   onActionClick?: () => void;
-  onRetry?: () => void;
   lastEventTime?: string;
   lastTxId?: string;
   lastDetails?: string;
@@ -38,7 +37,6 @@ export const RequirementCard: React.FC<RequirementCardProps> = ({
   actionUrl: propActionUrl,
   actionRoute: propActionRoute,
   onActionClick,
-  onRetry,
   lastEventTime: propLastEventTime,
   lastTxId: propLastTxId,
   lastDetails: propLastDetails,
@@ -239,16 +237,6 @@ export const RequirementCard: React.FC<RequirementCardProps> = ({
               )}
             </div>
           )}
-        </div>
-      )}
-
-      {status === 'failed' && onRetry && (
-        <div className="mt-3.5 rounded-lg border border-rose-200 bg-white/70 p-3 text-xs text-rose-900">
-          <p className="leading-relaxed">Try the test again after checking your request parameters and Sandbox credentials.</p>
-          <div className="mt-2 flex items-center gap-3">
-            <button type="button" onClick={onRetry} className="font-bold text-[#00B4CC] hover:underline">Try again <ArrowRight className="ml-1 inline h-3 w-3" /></button>
-            <a href="https://developer.payway.com.kh" target="_blank" rel="noreferrer" className="font-semibold text-gray-600 hover:underline">View troubleshooting guide</a>
-          </div>
         </div>
       )}
 

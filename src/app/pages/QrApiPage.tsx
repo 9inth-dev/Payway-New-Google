@@ -34,7 +34,6 @@ export const QrApiPage: React.FC = () => {
 
   const startBuildingRef = useRef<HTMLDivElement>(null);
   const [showSimulator, setShowSimulator] = useState(false);
-  const [showDownloadModal, setShowDownloadModal] = useState(false);
   const [simulatorMode, setSimulatorMode] = useState<SimulatorScenarioMode>('valid_qr');
   const [showApplyModal, setShowApplyModal] = useState(false);
   const [selectedTx, setSelectedTx] = useState<Transaction | null>(null);
@@ -438,10 +437,6 @@ export const QrApiPage: React.FC = () => {
   </button>
   )}
 
-              <button type="button" onClick={() => setShowDownloadModal(true)} className="px-3.5 py-2 text-xs font-semibold rounded-lg bg-[#00B4CC] text-white hover:bg-[#009cb2] transition-colors cursor-pointer flex items-center gap-1.5">
-                Download Simulator App
-              </button>
-
               <button
                 onClick={() => {
                   setSimulatorMode('valid_qr');
@@ -471,6 +466,26 @@ export const QrApiPage: React.FC = () => {
             </div>
           </div>
 
+          {/* ABA SIMULATOR APP */}
+          <section className="rounded-xl border border-cyan-100 bg-cyan-50/30 p-5 shadow-2xs" aria-labelledby="aba-simulator-title">
+            <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+              <div className="flex items-start gap-3">
+                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-white text-[#00B4CC] shadow-xs" aria-hidden="true">
+                  <svg width="20" height="20" fill="none" stroke="currentColor" strokeWidth="1.8" viewBox="0 0 24 24"><rect x="6" y="2.5" width="12" height="19" rx="2" /><path d="M9 5h6M10 18.5h4" /></svg>
+                </div>
+                <div>
+                  <h3 id="aba-simulator-title" className="text-sm font-bold text-gray-900">ABA Simulator App</h3>
+                  <p className="mt-1 max-w-2xl text-xs leading-relaxed text-gray-500">Use the simulator to scan QR codes and test the payment flow without a live bank account.</p>
+                </div>
+              </div>
+              <div className="flex shrink-0 flex-wrap items-center gap-2">
+                <a href="https://testflight.apple.com/join/8fJ2w7Qx" target="_blank" rel="noreferrer" className="inline-flex items-center gap-1.5 rounded-lg bg-[#00B4CC] px-3.5 py-2 text-xs font-semibold text-white transition-colors hover:bg-[#009cb2]">Download for iOS <ExternalLink className="h-3.5 w-3.5" /></a>
+                <button type="button" disabled className="inline-flex items-center gap-1.5 rounded-lg border border-gray-200 bg-gray-100 px-3.5 py-2 text-xs font-semibold text-gray-400">Download APK</button>
+              </div>
+            </div>
+            <p className="mt-3 pl-0 text-[11px] text-gray-500 sm:pl-[52px]">iOS available via TestFlight. Android version coming soon.</p>
+          </section>
+
           {/* REQUIREMENTS CARDS LIST */}
           <div className="flex flex-col gap-4">
             <RequirementCard
@@ -478,7 +493,6 @@ export const QrApiPage: React.FC = () => {
               title="1. Latest Generate QR API endpoint"
               explanation="Technical requirement. Automatically verified when a successful request to the current Generate QR API endpoint is detected."
               detail={ts.latestGenerateQrEndpoint}
-              onRetry={() => addToast('Fresh test started', 'Retry this requirement with a new Sandbox request.', 'info')}
             />
 
             <RequirementCard
@@ -486,7 +500,6 @@ export const QrApiPage: React.FC = () => {
               title="2. `lifetime` parameter included"
               explanation="Technical requirement. Automatically verified when your Generate QR request includes the required lifetime parameter."
               detail={ts.lifetimeParameter}
-              onRetry={() => addToast('Fresh test started', 'Retry this requirement with a new Sandbox request.', 'info')}
             />
 
             <RequirementCard
@@ -494,7 +507,6 @@ export const QrApiPage: React.FC = () => {
               title="3. Check Transaction fallback implemented"
               explanation="Technical requirement. Automatically verified when a Check Transaction fallback query succeeds after an unconfirmed transaction."
               detail={ts.checkTransactionFallback}
-              onRetry={() => addToast('Fresh test started', 'Retry this requirement with a new Sandbox request.', 'info')}
             />
 
             <RequirementCard
@@ -502,7 +514,6 @@ export const QrApiPage: React.FC = () => {
               title="4. `qr_image_template` used"
               explanation="Technical requirement. Automatically verified when your Generate QR request specifies PayWay's official qr_image_template."
               detail={ts.qrImageTemplate}
-              onRetry={() => addToast('Fresh test started', 'Retry this requirement with a new Sandbox request.', 'info')}
             />
 
             <RequirementCard
@@ -510,7 +521,6 @@ export const QrApiPage: React.FC = () => {
               title="5. `currency` parameter supported"
               explanation="Technical requirement. Verify settlement in both USD and KHR by testing payments in both currencies."
               detail={ts.currencySupport}
-              onRetry={() => addToast('Fresh test started', 'Retry this requirement with a new Sandbox request.', 'info')}
               isCurrencySupportRequirement={true}
               testedCurrencies={ts.currencySupport?.testedCurrencies || []}
             />
@@ -609,19 +619,6 @@ export const QrApiPage: React.FC = () => {
               onRequestProductionAccess={() => setShowApplyModal(true)}
             />
           )}
-        </div>
-      )}
-
-      {showDownloadModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4" role="dialog" aria-modal="true" aria-labelledby="simulator-download-title" onClick={() => setShowDownloadModal(false)}>
-          <div className="w-full max-w-md rounded-2xl bg-white p-6 shadow-2xl" onClick={(event) => event.stopPropagation()}>
-            <div className="flex items-start justify-between gap-4"><div><h2 id="simulator-download-title" className="text-lg font-bold text-gray-900">Download Simulator App</h2><p className="mt-1 text-sm text-gray-500">Use the ABA Simulator to scan QR codes and test payments.</p></div><button type="button" onClick={() => setShowDownloadModal(false)} className="text-xl leading-none text-gray-400 hover:text-gray-700" aria-label="Close">×</button></div>
-            <div className="mt-5 flex flex-col gap-3">
-              <a href="https://testflight.apple.com/join/8fJ2w7Qx" target="_blank" rel="noreferrer" className="flex items-center justify-between rounded-xl border border-cyan-200 bg-cyan-50/50 p-4 text-sm font-semibold text-gray-800 hover:bg-cyan-50"><span>iOS — TestFlight</span><ExternalLink className="h-4 w-4 text-[#00B4CC]" /></a>
-              <button type="button" disabled className="flex items-center justify-between rounded-xl border border-gray-200 bg-gray-50 p-4 text-left text-sm font-semibold text-gray-400"><span>Android — Google Play<br /><small className="font-normal">Coming soon</small></span></button>
-              <button type="button" disabled className="flex items-center justify-between rounded-xl border border-gray-200 bg-gray-50 p-4 text-left text-sm font-semibold text-gray-400"><span>Android — APK download<br /><small className="font-normal">Coming soon</small></span></button>
-            </div>
-          </div>
         </div>
       )}
 
