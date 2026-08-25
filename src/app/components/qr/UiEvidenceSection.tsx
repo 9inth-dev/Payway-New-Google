@@ -3,7 +3,7 @@ import { ExternalLink } from 'lucide-react';
 import { useSandbox } from '../../context/SandboxContext';
 import { EvidenceItem } from '../../types/sandbox';
 import { isTechnicalTestingComplete, isUiEvidenceComplete } from '../../utils/readiness';
-import { QR_API_DOCUMENTATION_URL } from '../../constants/developerResources';
+const UI_GUIDELINE_URL = 'https://figma.com/file/payway-qr-ui-guideline-placeholder';
 
 interface UiEvidenceSectionProps { stepNumber?: number; className?: string }
 const formatSize = (bytes: number) => `${(bytes / 1024 / 1024).toFixed(1)} MB`;
@@ -31,11 +31,11 @@ export const UiEvidenceSection: React.FC<UiEvidenceSectionProps> = ({ stepNumber
   const removeImage = (index: number) => { const next = screenshots.filter((_, itemIndex) => itemIndex !== index); updateEvidence({ screenshots: next, screenshotAttached: next.length > 0, screenshotFileName: next[0]?.fileName, screenshotFileSize: undefined }); };
   const moveImage = (index: number, direction: -1 | 1) => { const next = [...screenshots]; const target = index + direction; if (target < 0 || target >= next.length) return; [next[index], next[target]] = [next[target], next[index]]; updateEvidence({ screenshots: next }); };
   const statusText = locked ? 'LOCKED' : complete ? 'EVIDENCE SUBMITTED' : 'READY TO SUBMIT';
-  const handleCopyGuideline = () => { if (navigator.clipboard) navigator.clipboard.writeText(QR_API_DOCUMENTATION_URL); addToast('Guideline link copied', 'Share the official PayWay QR UI requirements with your team.', 'success'); };
+  const handleCopyGuideline = () => { if (navigator.clipboard) navigator.clipboard.writeText(UI_GUIDELINE_URL); addToast('Guideline link copied', 'Share the official PayWay QR UI requirements with your team.', 'success'); };
   return <div id="ui-evidence-section" className={className}>
     <div className="mb-4 flex flex-col gap-3 rounded-xl border border-slate-200 bg-slate-50/80 p-4 sm:flex-row sm:items-center sm:justify-between">
       <div><p className="text-sm font-bold text-slate-900">Follow the PayWay QR UI guideline</p><p className="mt-1 text-xs leading-relaxed text-slate-600">Review the official layout, spacing, and branding requirements before recording or capturing your UI.</p></div>
-      <div className="flex shrink-0 items-center gap-2"><a href={QR_API_DOCUMENTATION_URL} target="_blank" rel="noreferrer" className="inline-flex items-center gap-1.5 rounded-lg bg-[#00B4CC] px-3 py-2 text-xs font-semibold text-white hover:bg-[#009cb2]">View UI guideline <ExternalLink className="h-3.5 w-3.5" /></a><button type="button" onClick={handleCopyGuideline} className="rounded-lg border border-slate-300 bg-white px-3 py-2 text-xs font-semibold text-slate-700 hover:bg-slate-50">Copy link</button></div>
+      <div className="flex shrink-0 items-center gap-2"><a href={UI_GUIDELINE_URL} target="_blank" rel="noreferrer" className="inline-flex items-center gap-1.5 rounded-lg bg-[#00B4CC] px-3 py-2 text-xs font-semibold text-white hover:bg-[#009cb2]">View UI guideline <ExternalLink className="h-3.5 w-3.5" /></a><button type="button" onClick={handleCopyGuideline} className="rounded-lg border border-slate-300 bg-white px-3 py-2 text-xs font-semibold text-slate-700 hover:bg-slate-50">Copy link</button></div>
     </div>
     <div className="rounded-xl border border-slate-200/90 bg-white p-6 shadow-2xs">
       <div className="mb-5 flex items-start justify-between gap-4"><div>{stepNumber && <div className="mb-1 flex items-center gap-2"><span className="flex h-6 w-6 items-center justify-center rounded-full bg-[#00B4CC] text-xs font-bold text-white">{stepNumber}</span><h3 className="text-base font-bold text-slate-900">Stage {stepNumber}: Submit UI evidence</h3></div>}<p className="mt-1 text-xs leading-relaxed text-slate-500">Show us how PayWay is implemented in your product.</p></div><span className={`shrink-0 rounded border px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider ${locked ? 'border-slate-200 bg-slate-50 text-slate-500' : complete ? 'border-emerald-300 bg-emerald-50 text-emerald-700' : 'border-cyan-200 bg-cyan-50 text-cyan-700'}`}>{statusText}</span></div>
